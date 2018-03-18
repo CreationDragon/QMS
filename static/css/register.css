@@ -1,0 +1,8 @@
+form {
+    margin-top: 2%;
+    align-items: center;
+}
+
+.layui-form-label {
+    width: 120px;
+}

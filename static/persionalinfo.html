@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">账号名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="userName" autocomplete="off" placeholder="请输入用户名"
+                   id="username" class="layui-input layui-disabled" disabled
+            >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">头像</label>
+        <img src="resources/imges/1.png" class="image" id="My_Head">
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">住址</label>
+        <div class="layui-input-inline">
+            <select name="province" id="province" lay-filter="province" disabled="disabled">
+                <option value="" selected="" class="province">请选择省</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="city" id="city" lay-filter="city" disabled="disabled">
+                <option value="" selected="" class="city">请选择市</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="district" id="district" disabled="disabled">
+                <option value="" selected="" class="district">请选择县/区</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input name="userGener" value="男" title="男" checked="" type="radio" class="layui-disabled" disabled>
+            <input name="userGener" value="女" title="女" type="radio">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-inline">
+                <input name="userPhone" id="phone" autocomplete="off"
+                       class="layui-input layui-disabled" disabled
+                       type="tel">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">常用邮箱</label>
+            <div class="layui-input-inline">
+                <input name="userEmail" autocomplete="off" class="layui-input layui-disabled"
+                       disabled type="text"
+                       id="email">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">详细地址</label>
+        <div class="layui-input-block">
+            <textarea name="userAddressDetail" placeholder="请输入详细地址" class="layui-textarea layui-disabled" disabled
+                      id="address_detail"></textarea>
+        </div>
+    </div>
+    <!--<div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">编辑器</label>
+      <div class="layui-input-block">
+        <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+      </div>
+    </div>-->
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">确认</button>
+        </div>
+    </div>
+</form>
+
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    layui.use(['form'], function (data) {
+        var form = layui.form
+            , layer = layui.layer
+//监听提交
+        form.on('submit(demo1)', function (data) {
+            layer.msg("哈哈哈哈啊哈哈")
+        })
+        // return false;
+    });
+</script>
+
+
+</body>
+</html>

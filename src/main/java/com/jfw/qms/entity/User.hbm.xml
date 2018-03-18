@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.User" table="user" schema="qms">
+        <id name="userId">
+            <column name="user_id" sql-type="int(11)"/>
+        </id>
+        <property name="userName">
+            <column name="user_name" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="userPsw">
+            <column name="user_psw" sql-type="varchar(200)" length="200" not-null="true"/>
+        </property>
+        <property name="userGener">
+            <column name="user_gener" sql-type="varchar(10)" length="10" not-null="true"/>
+        </property>
+        <property name="userPhone">
+            <column name="user_phone" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="userEmail">
+            <column name="user_email" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="userAuthority">
+            <column name="user_authority" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="userAddressDetail">
+            <column name="user_address_detail" sql-type="varchar(200)" length="200" not-null="true"/>
+        </property>
+        <property name="userHead">
+            <column name="user_head" sql-type="varchar(200)" length="200" not-null="true"/>
+        </property>
+        <property name="userProvince">
+            <column name="user_province" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="userCity">
+            <column name="user_city" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="userDistrict">
+            <column name="user_district" sql-type="int(11)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

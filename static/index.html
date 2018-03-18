@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>首页</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/index.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<!--导航栏信息-->
+<div id="nav">
+    <div id="nav_left">
+        <ul class="layui-nav">
+            <li class="layui-nav-item" id="all"><a>所有问卷</a></li>
+            <li class="layui-nav-item layui-this">
+                <a href="javascript:;">热门问卷</a>
+            </li>
+            <li class="layui-nav-item"><a href="">问卷搜索</a></li>
+            <li class="layui-nav-item"><a href="">留言</a></li>
+            <li class="layui-nav-item"><a href="">统计分析</a></li>
+        </ul>
+    </div>
+
+    <div id="nav_right">
+        <ul class="layui-nav">
+            <li class="layui-nav-item">
+                <a href="" id="persional_info_center">个人中心</a>
+            </li>
+
+
+            <li class="layui-nav-item" id="MyInfo">
+                <a href=""><img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="My_Head"><span id="MyName">我</span></a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;">修改信息</a></dd>
+                    <dd><a href="javascript:;">退了</a></dd>
+                </dl>
+            </li>
+
+            <!--<div id="to_option">-->
+            <li class="layui-nav-item" lay-unselect="" id="to_register">
+                <div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
+                    <a id="register" href="register.html">注册</a>
+                </div>
+            </li>
+            <li class="layui-nav-item" lay-unselect="" id="horizon">
+                |
+            </li>
+            <li class="layui-nav-item" lay-unselect="" id="to_login">
+                <a id="login">登录</a>
+            </li>
+
+            <!--</div>-->
+        </ul>
+    </div>
+    <div id="clear"></div>
+</div>
+<!--导航消息界面-->
+<div id="nav_content"></div>
+
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery-3.3.1.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/index",
+        async: false,
+        success: function (data) {
+            if ((data.data.userName || data.data.userPsw) == null) {
+                $("#MyInfo").hide();
+            } else {
+                $("#to_register").hide();
+                $("#to_login").hide();
+                $("#horizon").hide();
+                $("#MyName").text(data.data.userName);
+                $("#persional_info_center").attr('href', 'persionalinfo.html?userName=' + data.data.userName + 'userPsw=' + data.data.userPsw);
+
+            }
+            console.info(data.data.userName);
+        }
+    });
+
+    layui.use('element', function () {
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        //监听导航点击
+        element.on('nav(demo)', function (elem) {
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+    });
+    $('#all').click(function () {
+
+        $.ajax({
+            url: "allquests.html", //这里是静态页的地址
+            type: "GET", //静态页用get方法，否则服务器会抛出405错误
+            success: function (data) {
+                // var result = $(data).find("#nav_content");
+                $("#nav_content").html(data);
+
+            }
+        });
+
+    })
+
+
+</script>
+</body>
+</html>

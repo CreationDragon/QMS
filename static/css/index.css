@@ -1,0 +1,19 @@
+#nav_left {
+    float: left;
+    width: 80%;
+}
+
+#nav_right {
+    float: left;
+    width: 20%;
+}
+
+#clear {
+    clear: both;
+}
+
+#nav_content {
+    margin-right: 20%;
+    margin-left: 20%;
+    margin-top: 2%;
+}
