@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>log-in</title>
+    <link rel="stylesheet" href="css/Login.css">
+</head>
+<body>
+<header>
+    <div class="header-line"></div>
+</header>
+<div class="content">
+    <img class="content-logo" src="resources/imges/login.png" alt="logo">
+    <h1 class="content-title">登录</h1>
+    <div class="content-form">
+        <form action="/login" method="post">
+            <div id="change_margin_1">
+                <input class="user" type="text" name="userName" placeholder="请输入用户名">
+            </div>
+            <div id="change_margin_2">
+                <input class="password" type="password" name="userPsw" placeholder="请输入密码">
+            </div>
+            <div id="change_margin_3">
+                <button class="layui-btn" type="button" style="width: 250px" id="submit">登录</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+    $(function () {
+        $("#submit").click(function () {
+            var userName = $(".user").val();
+            var userPsw = $(".password").val();
+            if ($(".user").val() != null && $(".password").val() != null) {
+                $.ajax({
+                    url: "/login",
+                    method: "post",
+                    type: "post",
+                    datatype: "json",
+                    data: {userName: userName, userPsw: userPsw},
+                    success: function (data) {
+                        console.info(data.data);
+                        layer.msg("登陆成功");
+                        if (data.data == 1) {
+                            setTimeout('window.location.href = "administrator.html";', 2000);
+                        } else {
+                            setTimeout('window.location.href = "index.html";', 2000);
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg(data.data)
+                    }
+                })
+            } else {
+                layer.msg("用户名/密码不能为空");
+            }
+        })
+    })
+
+    console.info(userName + "-----" + userPsw);
+</script>
+</body>
+</html>

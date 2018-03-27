@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.Question" table="question" schema="qms">
+        <id name="questionId">
+            <column name="question_id" sql-type="int(11)"/>
+        </id>
+        <property name="diseaseId">
+            <column name="disease_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="title">
+            <column name="title" sql-type="varchar(200)" length="200" not-null="true"/>
+        </property>
+        <property name="answerA">
+            <column name="answer_A" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="answerB">
+            <column name="answer_B" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="answerC">
+            <column name="answer_C" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="answerD">
+            <column name="answer_D" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

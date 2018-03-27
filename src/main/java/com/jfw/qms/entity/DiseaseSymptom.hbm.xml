@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.DiseaseSymptom" table="disease_symptom" schema="qms">
+        <composite-id mapped="true" class="com.jfw.qms.entity.DiseaseSymptomPK">
+            <key-property name="symptomId">
+                <column name="symptom_id" sql-type="int(11)"/>
+            </key-property>
+            <key-property name="diseaseId">
+                <column name="disease_id" sql-type="int(11)"/>
+            </key-property>
+        </composite-id>
+        <property name="symptomName">
+            <column name="symptom_name" sql-type="varchar(20)" length="20" not-null="true"/>
+        </property>
+        <property name="symptomOptionA">
+            <column name="symptom_optionA" sql-type="char(2)" length="2" not-null="true"/>
+        </property>
+        <property name="symptomOptionB">
+            <column name="symptom_optionB" sql-type="char(2)" length="2" not-null="true"/>
+        </property>
+        <property name="symptomOptionC">
+            <column name="symptom_optionC" sql-type="char(2)" length="2" not-null="true"/>
+        </property>
+        <property name="symptomOptionD">
+            <column name="symptom_optionD" sql-type="char(2)" length="2" not-null="true"/>
+        </property>
+        <property name="symptomDescribe">
+            <column name="symptom_describe" sql-type="varchar(200)" length="200" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

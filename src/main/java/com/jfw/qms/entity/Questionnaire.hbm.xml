@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.Questionnaire" table="questionnaire" schema="qms">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+        </id>
+        <property name="questionnaireId">
+            <column name="questionnaire_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="questionId">
+            <column name="question_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="questionAnswer">
+            <column name="question_answer" sql-type="varchar(10)" length="10" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

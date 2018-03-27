@@ -19,6 +19,7 @@ public class User {
     private Integer userProvince;
     private Integer userCity;
     private Integer userDistrict;
+    private Integer userState;
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -180,5 +181,15 @@ public class User {
         result = 31 * result + (userCity != null ? userCity.hashCode() : 0);
         result = 31 * result + (userDistrict != null ? userDistrict.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "user_state", nullable = true)
+    public Integer getUserState() {
+        return userState;
+    }
+
+    public void setUserState(Integer userState) {
+        this.userState = userState;
     }
 }

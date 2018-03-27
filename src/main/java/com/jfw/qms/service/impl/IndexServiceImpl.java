@@ -1,6 +1,7 @@
 package com.jfw.qms.service.impl;
 
 import com.jfw.qms.model.Area;
+import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.model.User;
 import com.jfw.qms.repository.IndexRepository;
 import com.jfw.qms.service.IndexService;
@@ -12,6 +13,7 @@ public class IndexServiceImpl implements IndexService {
     @Autowired
     private IndexRepository indexRepository;
     private String msg;
+    private User user;
 
     @Override
     public Area getArea(String id, String sign) {
@@ -27,8 +29,28 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public String registerNumber(User user) {
+    public String registerNumber(com.jfw.qms.model.User user) {
         msg = indexRepository.registerNumber(user);
         return msg;
+    }
+
+    @Override
+    public User getUserInfo() {
+
+        user = indexRepository.getUserInfo();
+        return user;
+    }
+
+    @Override
+    public User login(String userName, String userPsw) {
+        user = indexRepository.login(userName, userPsw);
+        return user;
+    }
+
+    @Override
+    public ThreeArea getAreaById(String provinceID, String cityID, String districtID) {
+        ThreeArea threeArea = new ThreeArea();
+        threeArea = indexRepository.getAreaById(provinceID, cityID, districtID);
+        return threeArea;
     }
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+</head>
+<body>
+
+<table id="demo" lay-filter="test"></table>
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layui/layui.js"></script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+        // $("#layui-table-cell laytable-cell-1-option").append("<div class=\"layui-btn-group\"><button class=\"layui-btn\">编辑</button><button class=\"layui-btn\">删除</button></div>")
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            , height: 315
+            , url: '/admin/getUser' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'userId', title: '用户ID', width: 85, sort: true, fixed: 'left'}
+                , {field: 'userName', title: '用户名', width: 70}
+                , {field: 'userGener', title: '性别', width: 86, sort: true}
+                , {field: 'province', title: '省名', width: 90}
+                , {field: 'city', title: '城市名', width: 90}
+                , {field: 'district', title: '区/县名', width: 90, sort: true}
+                , {field: 'userAddressDetail', title: '详细地址', width: 170, sort: true}
+                , {field: 'userEmail', title: '邮箱', width: 180}
+                , {field: 'userPhone', title: '电话', width: 140, sort: true}
+                , {field: 'option', title: '操作', width: 140, sort: true}
+            ]]
+        });
+
+    });
+    $(function () {
+        $("#edit").click(function () {
+            console.info("你点击了编辑按钮");
+        })
+    })
+</script>
+</body>
+</html>

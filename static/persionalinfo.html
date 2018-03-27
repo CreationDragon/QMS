@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>个人信息</title>
+    <title>编辑用户信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -50,7 +50,7 @@
         <label class="layui-form-label">性别</label>
         <div class="layui-input-block">
             <input name="userGener" value="男" title="男" checked="" type="radio" class="layui-disabled" disabled>
-            <input name="userGener" value="女" title="女" type="radio">
+            <input name="userGener" value="女" title="女" type="radio" class="layui-disabled" disabled>
         </div>
     </div>
 
@@ -80,32 +80,99 @@
                       id="address_detail"></textarea>
         </div>
     </div>
-    <!--<div class="layui-form-item layui-form-text">
-      <label class="layui-form-label">编辑器</label>
-      <div class="layui-input-block">
-        <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
-      </div>
-    </div>-->
+
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="demo1">确认</button>
+            <button class="layui-btn" type="button" lay-submit="" lay-filter="demo1">确认</button>
         </div>
     </div>
 </form>
 
 
 <script src="js/jquery-3.3.1.js"></script>
-<script src="layui/layui.js" charset="utf-8"></script>
-<script src="js/bootstrap.js"></script>
+<script src="layui/layui.js"></script>
 <script>
+    var result;
+    var province;
+    var city;
+    var district;
+    <!--获取index.html中a标签传递的参数-->
+    var data = decodeURI(window.location.href).split("?")[1].split("&");
+    var userName = data[0];
+    var userPsw = data[1];
+    var userAuthority = data[2];
+
+
+    //通过userName和userPsw获取信息
+    $.ajax({
+        url: "getInfo",
+        type: "post",
+        data: {userName: userName, userPsw: userPsw},
+        method: "post",
+        datatype: "json",
+        async: false,
+        success: function (data) {
+            result = data.data;
+            console.info("用户编辑中返回的参数:   " + result)
+
+            getArea(result);
+
+
+            console.info(result);
+            $("#username").val(result.userName);
+            $("#password").val(result.userPsw);
+            $("#phone").val(result.userPhone).attr('selected', true);
+            $("#email").val(result.userEmail).attr('selected', true);
+            $("#address_detail").val(result.userAddressDetail);
+            $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
+            $("#city").append("<option value='" + city + "'>" + city + "</option>").val(city);
+            $("#district").append("<option value='" + district + "'>" + district + "</option>").val(district);
+            if (data.data.userGener == "男") {
+                $("input[value='男']").attr('checked', 'true');
+            } else {
+                $("input[value='女']").attr('checked', 'true');
+            }
+
+
+        },
+        error: function (data) {
+
+        }
+    });
+
+    function getArea(result) {
+        $.ajax({
+                url: "/getAreaById",
+                type: "post",
+                data: {"provinceID": result.userProvince, "cityID": result.userCity, "districtID": result.userDistrict},
+                method: "post",
+                datatype: "json",
+                async: false,
+                success: function (data) {
+                    console.info("单纯获取地区:   " + data.data.areaProvince.provinceName);
+                    province = data.data.areaProvince.provinceName;
+                    city = data.data.areaCity.cityName;
+                    district = data.data.areaDistrict.districtName;
+                },
+                error: function (data) {
+
+                }
+
+            }
+        );
+    }
+
     layui.use(['form'], function (data) {
         var form = layui.form
-            , layer = layui.layer
 //监听提交
         form.on('submit(demo1)', function (data) {
-            layer.msg("哈哈哈哈啊哈哈")
+            if (userAuthority = 1) {
+                window.location.href = "administrator.html";
+            } else {
+                window.location.href = "index.html";
+            }
         })
-        // return false;
+        return false;
     });
 </script>
 

@@ -6,7 +6,7 @@
   <session-factory>
     <property name="connection.url">jdbc:mysql://localhost:3306/QMS</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <!--<mapping resource="com/jfw/qms/entity/AreaCity.hbm.xml"/>-->
+      <!--<mapping resource="com/jfw/qms/entity/AreaCity.hbm.xml"/>-->
     <mapping class="com.jfw.qms.entity.AreaCity"/>
     <!--<mapping resource="com/jfw/qms/entity/AreaDistrict.hbm.xml"/>-->
     <mapping class="com.jfw.qms.entity.AreaDistrict"/>
@@ -14,8 +14,19 @@
     <mapping class="com.jfw.qms.entity.AreaProvince"/>
     <mapping resource="com/jfw/qms/entity/User.hbm.xml"/>
     <mapping class="com.jfw.qms.entity.User"/>
+      <mapping resource="com/jfw/qms/entity/AreaCity.hbm.xml"/>
+      <mapping resource="com/jfw/qms/entity/AreaDistrict.hbm.xml"/>
+      <mapping resource="com/jfw/qms/entity/AreaProvince.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.DiseaseClassification"/>
+      <mapping resource="com/jfw/qms/entity/DiseaseClassification.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.DiseaseSymptom"/>
+      <mapping resource="com/jfw/qms/entity/DiseaseSymptom.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.Question"/>
+      <mapping resource="com/jfw/qms/entity/Question.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.Questionnaire"/>
+      <mapping resource="com/jfw/qms/entity/Questionnaire.hbm.xml"/>
 
-    <!-- <property name="connection.username"/> -->
+      <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->
