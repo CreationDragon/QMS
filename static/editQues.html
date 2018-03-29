@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<div class="layui-form-item" style="margin-top: 10px">
+    <label class="layui-form-label">题目</label>
+    <div class="layui-input-block">
+        <input type="text" name="title" id="title" autocomplete="off"
+               class="layui-input">
+    </div>
+</div>
+
+<div class="layui-form-item" style="margin-top: 10px">
+    <label class="layui-form-label">答案A</label>
+    <div class="layui-input-inline">
+        <input type="text" name="answerA" id="answerA" autocomplete="off"
+               class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item" style="margin-top: 10px">
+    <label class="layui-form-label">答案B</label>
+    <div class="layui-input-inline">
+        <input type="text" name="answerB" id="answerB" autocomplete="off"
+               class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item" style="margin-top: 10px">
+    <label class="layui-form-label">答案C</label>
+    <div class="layui-input-inline">
+        <input type="text" name="answerC" id="answerC" autocomplete="off"
+               class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item" style="margin-top: 10px">
+    <label class="layui-form-label">答案D</label>
+    <div class="layui-input-inline">
+        <input type="text" name="answerD" id="answerD" autocomplete="off"
+               class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" id="ques_submit">确认修改</button>
+        <button type="reset" id="ques_reset" class="layui-btn layui-btn-primary">放弃修改</button>
+    </div>
+</div>
+
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+<script>
+    var data = decodeURI(window.location.href).split("?")[1].split("=");
+    var quesID = data[1];
+    console.info("data是:    " + data)
+    console.info("quesID是:  " + quesID);
+
+    //通过quesID获取信息
+    $.ajax({
+        url: "/admin/getQuesInfoById",
+        type: "post",
+        data: {"quesID": quesID},
+        method: "post",
+        datatype: "json",
+        async: false,
+        success: function (data) {
+            result = data.data;
+            console.info("用户编辑中返回的参数:   " + result)
+            $("#title").val(result.title);
+            $("#answerA").val(result.answerA)
+            $("#answerB").val(result.answerB)
+            $("#answerC").val(result.answerC)
+            $("#answerD").val(result.answerD)
+        },
+        error: function (data) {
+
+        }
+    });
+    $(function () {
+        $("#ques_submit").on("click", function () {
+            var title = $("#title").val();
+            var answerA = $("#answerA").val()
+            var answerB = $("#answerB").val()
+            var answerC = $("#answerC").val()
+            var answerD = $("#answerD").val()
+
+            $.ajax({
+                url: "/admin/editQues",
+                type: "post",
+                data: {
+                    "quesID": quesID,
+                    "title": title,
+                    "answerA": answerA,
+                    "answerB": answerB,
+                    "answerC": answerC,
+                    "answerD": answerD,
+                },
+                method: "post",
+                datatype: "json",
+                async: false,
+                success: function (data) {
+                    if (data.result == "success") {
+                        layer.msg(data.data, {icon: 1});
+                        setTimeout(function () {
+                            window.location.href = "administrator.html";
+                        }, 1500)
+                    } else {
+                        layer.msg(data.data, {icon: 5});
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+
+        })
+        $("#ques_reset").on("click", function () {
+            history.go(-1);
+            window.location.href = document.referrer;
+        })
+    })
+
+</script>
+
+</body>
+</html>

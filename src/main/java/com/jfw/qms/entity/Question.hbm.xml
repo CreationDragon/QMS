@@ -26,5 +26,8 @@
         <property name="answerD">
             <column name="answer_D" sql-type="varchar(50)" length="50" not-null="true"/>
         </property>
+        <property name="questionState">
+            <column name="question_state" sql-type="int(11)" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

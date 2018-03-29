@@ -1,23 +1,15 @@
-package com.jfw.qms.entity;
+package com.jfw.qms.model;
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
 public class Question {
     private int questionId;
-    private Integer diseaseId;
-    private String title;
-    private String answerA;
-    private String answerB;
-    private String answerC;
-    private String answerD;
-    private Integer questionState;
 
     @Id
-    @Column(name = "question_id", nullable = false)
+    @javax.persistence.Column(name = "question_id", nullable = false)
     public int getQuestionId() {
         return questionId;
     }
@@ -26,8 +18,11 @@ public class Question {
         this.questionId = questionId;
     }
 
+    private Integer diseaseId;
+
+
     @Basic
-    @Column(name = "disease_id", nullable = true)
+    @javax.persistence.Column(name = "disease_id", nullable = true)
     public Integer getDiseaseId() {
         return diseaseId;
     }
@@ -36,8 +31,10 @@ public class Question {
         this.diseaseId = diseaseId;
     }
 
+    private String title;
+
     @Basic
-    @Column(name = "title", nullable = true, length = 200)
+    @javax.persistence.Column(name = "title", nullable = true, length = 200)
     public String getTitle() {
         return title;
     }
@@ -46,8 +43,10 @@ public class Question {
         this.title = title;
     }
 
+    private String answerA;
+
     @Basic
-    @Column(name = "answer_A", nullable = true, length = 50)
+    @javax.persistence.Column(name = "answer_A", nullable = true, length = 50)
     public String getAnswerA() {
         return answerA;
     }
@@ -56,8 +55,10 @@ public class Question {
         this.answerA = answerA;
     }
 
+    private String answerB;
+
     @Basic
-    @Column(name = "answer_B", nullable = true, length = 50)
+    @javax.persistence.Column(name = "answer_B", nullable = true, length = 50)
     public String getAnswerB() {
         return answerB;
     }
@@ -66,8 +67,10 @@ public class Question {
         this.answerB = answerB;
     }
 
+    private String answerC;
+
     @Basic
-    @Column(name = "answer_C", nullable = true, length = 50)
+    @javax.persistence.Column(name = "answer_C", nullable = true, length = 50)
     public String getAnswerC() {
         return answerC;
     }
@@ -76,14 +79,27 @@ public class Question {
         this.answerC = answerC;
     }
 
+    private String answerD;
+
     @Basic
-    @Column(name = "answer_D", nullable = true, length = 50)
+    @javax.persistence.Column(name = "answer_D", nullable = true, length = 50)
     public String getAnswerD() {
         return answerD;
     }
 
     public void setAnswerD(String answerD) {
         this.answerD = answerD;
+    }
+
+
+    private String option;
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 
     @Override
@@ -114,15 +130,5 @@ public class Question {
         result = 31 * result + (answerC != null ? answerC.hashCode() : 0);
         result = 31 * result + (answerD != null ? answerD.hashCode() : 0);
         return result;
-    }
-
-    @Basic
-    @Column(name = "question_state", nullable = true)
-    public Integer getQuestionState() {
-        return questionState;
-    }
-
-    public void setQuestionState(Integer questionState) {
-        this.questionState = questionState;
     }
 }

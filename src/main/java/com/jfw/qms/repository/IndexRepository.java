@@ -25,12 +25,12 @@ public class IndexRepository {
         if ("province".equals(sign)) {
             areaProvinceList = jdbcTemplate.query("select * from area_province", new BeanPropertyRowMapper<>(AreaProvince.class));
         } else if (sign.equals("city")) {
-//            areaCityList = jdbcTemplate.query("select * from qms.area_city WHERE province_id=" + count, new BeanPropertyRowMapper<>(AreaCity.class));
-            areaCityList = jdbcTemplate.query("select * from qms.area_city WHERE city_id=" + count, new BeanPropertyRowMapper<>(AreaCity.class));
+            areaCityList = jdbcTemplate.query("select * from qms.area_city WHERE province_id=" + count, new BeanPropertyRowMapper<>(AreaCity.class));
+//            areaCityList = jdbcTemplate.query("select * from qms.area_city WHERE city_id=" + count, new BeanPropertyRowMapper<>(AreaCity.class));
         } else if (sign.equals("district")) {
 //            count = count - 1;
-//            areaDistrictList = jdbcTemplate.query("select * from qms.area_district WHERE city_id=" + count, new BeanPropertyRowMapper<>(AreaDistrict.class));
-            areaDistrictList = jdbcTemplate.query("select * from qms.area_district WHERE district_id=" + count, new BeanPropertyRowMapper<>(AreaDistrict.class));
+            areaDistrictList = jdbcTemplate.query("select * from qms.area_district WHERE city_id=" + count, new BeanPropertyRowMapper<>(AreaDistrict.class));
+//            areaDistrictList = jdbcTemplate.query("select * from qms.area_district WHERE district_id=" + count, new BeanPropertyRowMapper<>(AreaDistrict.class));
         }
         Area area = new Area();
         area.setProvinceList(areaProvinceList);
@@ -57,7 +57,7 @@ public class IndexRepository {
                             user.getUserName(), user.getUserPsw(), user.getUserGener(),
                             user.getUserPhone(), user.getUserEmail(), user.getUserAddressDetail(),
 //                            user.getProvince(), user.getCity(), user.getDistrict()
-                            user.getUserProvince(), user.getUserCity(), user.getUserDistrict()
+                            user.getProvince(), user.getCity(), user.getDistrict()
                     });
             System.out.println("插入数据后返回的数是:     " + value);
             msg = "注册成功";

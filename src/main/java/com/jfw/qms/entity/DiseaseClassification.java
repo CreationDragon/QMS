@@ -1,16 +1,16 @@
 package com.jfw.qms.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-@javax.persistence.Table(name = "disease_classification", schema = "qms", catalog = "")
+@Table(name = "disease_classification", schema = "qms", catalog = "")
 public class DiseaseClassification {
     private int diseaseId;
+    private String diseaseName;
+    private String diseaseDescribe;
 
     @Id
-    @javax.persistence.Column(name = "disease_id", nullable = false)
+    @Column(name = "disease_id", nullable = false)
     public int getDiseaseId() {
         return diseaseId;
     }
@@ -19,10 +19,8 @@ public class DiseaseClassification {
         this.diseaseId = diseaseId;
     }
 
-    private String diseaseName;
-
     @Basic
-    @javax.persistence.Column(name = "disease_name", nullable = true, length = 50)
+    @Column(name = "disease_name", nullable = true, length = 50)
     public String getDiseaseName() {
         return diseaseName;
     }
@@ -31,10 +29,8 @@ public class DiseaseClassification {
         this.diseaseName = diseaseName;
     }
 
-    private String diseaseDescribe;
-
     @Basic
-    @javax.persistence.Column(name = "disease_describe", nullable = true, length = 200)
+    @Column(name = "disease_describe", nullable = true, length = 200)
     public String getDiseaseDescribe() {
         return diseaseDescribe;
     }

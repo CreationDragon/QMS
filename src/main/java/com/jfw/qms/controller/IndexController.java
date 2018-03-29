@@ -98,6 +98,7 @@ public class IndexController {
             //将数据存储在Session中
             session.setAttribute("userName", user.getUserName());
             session.setAttribute("userPsw", user.getUserPsw());
+            session.setAttribute("user_id", user.getUserId());
         } else {
             result.setResult("fail");
         }
@@ -126,12 +127,14 @@ public class IndexController {
             session.setAttribute("user_name", user.getUserName());
             session.setAttribute("user_psw", user.getUserPsw());
             session.setAttribute("user_authority", user.getUserAuthority());
+            session.setAttribute("user_id", user.getUserId());
 
         } else {
             //将数据存储在Session中
             session.setAttribute("userName", user.getUserName());
             session.setAttribute("userPsw", user.getUserPsw());
             session.setAttribute("user_authority", user.getUserAuthority());
+            session.setAttribute("user_id", user.getUserId());
         }
 
         if (user.getUserName() != null) {
@@ -141,9 +144,16 @@ public class IndexController {
             result.setResult("fail");
             result.setData("您还未主册");
         }
+        return result;
+    }
+
+    @PostMapping(path = "/modifyUserInfo")
+    public JsonResult modifyUserInfo(@RequestParam String userID) {
+        result = new JsonResult();
 
         return result;
     }
+
 
     @PostMapping(path = "/loginout")
     public JsonResult loginout(HttpServletRequest request, HttpServletResponse response) {
@@ -154,6 +164,7 @@ public class IndexController {
         } else {
             session.removeAttribute("userName");
             session.removeAttribute("userPsw");
+            session.removeAttribute("user_id");
 
             result.setResult("success");
             result.setData("success");
@@ -187,11 +198,11 @@ public class IndexController {
         if (null != file) {
             String myFileName = file.getOriginalFilename();// 文件原名称
 
-            File fileDir = new File("D://image/head");
+            File fileDir = new File("D://image");
             if (!fileDir.exists()) { //如果不存在 则创建
                 fileDir.mkdirs();
             }
-            String path = "D://image/head.png";
+            String path = "D://image//head.png";
             File localFile = new File(path);
             try {
                 file.transferTo(localFile);
@@ -199,6 +210,8 @@ public class IndexController {
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {

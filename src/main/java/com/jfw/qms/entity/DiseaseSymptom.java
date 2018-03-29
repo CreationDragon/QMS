@@ -1,15 +1,22 @@
 package com.jfw.qms.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
-@javax.persistence.Table(name = "disease_symptom", schema = "qms", catalog = "")
-@javax.persistence.IdClass(com.jfw.qms.entity.DiseaseSymptomPK.class)
+@Table(name = "disease_symptom", schema = "qms", catalog = "")
+@IdClass(DiseaseSymptomPK.class)
 public class DiseaseSymptom {
     private int symptomId;
+    private int diseaseId;
+    private String symptomName;
+    private String symptomOptionA;
+    private String symptomOptionB;
+    private String symptomOptionC;
+    private String symptomOptionD;
+    private String symptomDescribe;
 
-    @javax.persistence.Id
-    @javax.persistence.Column(name = "symptom_id", nullable = false)
+    @Id
+    @Column(name = "symptom_id", nullable = false)
     public int getSymptomId() {
         return symptomId;
     }
@@ -18,10 +25,8 @@ public class DiseaseSymptom {
         this.symptomId = symptomId;
     }
 
-    private int diseaseId;
-
-    @javax.persistence.Id
-    @javax.persistence.Column(name = "disease_id", nullable = false)
+    @Id
+    @Column(name = "disease_id", nullable = false)
     public int getDiseaseId() {
         return diseaseId;
     }
@@ -30,10 +35,8 @@ public class DiseaseSymptom {
         this.diseaseId = diseaseId;
     }
 
-    private String symptomName;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_name", nullable = true, length = 20)
+    @Basic
+    @Column(name = "symptom_name", nullable = true, length = 20)
     public String getSymptomName() {
         return symptomName;
     }
@@ -42,10 +45,8 @@ public class DiseaseSymptom {
         this.symptomName = symptomName;
     }
 
-    private String symptomOptionA;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_optionA", nullable = true, length = 2)
+    @Basic
+    @Column(name = "symptom_optionA", nullable = true, length = 2)
     public String getSymptomOptionA() {
         return symptomOptionA;
     }
@@ -54,10 +55,8 @@ public class DiseaseSymptom {
         this.symptomOptionA = symptomOptionA;
     }
 
-    private String symptomOptionB;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_optionB", nullable = true, length = 2)
+    @Basic
+    @Column(name = "symptom_optionB", nullable = true, length = 2)
     public String getSymptomOptionB() {
         return symptomOptionB;
     }
@@ -66,10 +65,8 @@ public class DiseaseSymptom {
         this.symptomOptionB = symptomOptionB;
     }
 
-    private String symptomOptionC;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_optionC", nullable = true, length = 2)
+    @Basic
+    @Column(name = "symptom_optionC", nullable = true, length = 2)
     public String getSymptomOptionC() {
         return symptomOptionC;
     }
@@ -78,10 +75,8 @@ public class DiseaseSymptom {
         this.symptomOptionC = symptomOptionC;
     }
 
-    private String symptomOptionD;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_optionD", nullable = true, length = 2)
+    @Basic
+    @Column(name = "symptom_optionD", nullable = true, length = 2)
     public String getSymptomOptionD() {
         return symptomOptionD;
     }
@@ -90,10 +85,8 @@ public class DiseaseSymptom {
         this.symptomOptionD = symptomOptionD;
     }
 
-    private String symptomDescribe;
-
-    @javax.persistence.Basic
-    @javax.persistence.Column(name = "symptom_describe", nullable = true, length = 200)
+    @Basic
+    @Column(name = "symptom_describe", nullable = true, length = 200)
     public String getSymptomDescribe() {
         return symptomDescribe;
     }

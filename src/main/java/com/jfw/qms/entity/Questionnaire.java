@@ -1,15 +1,19 @@
 package com.jfw.qms.entity;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
 public class Questionnaire {
     private int id;
+    private Integer questionnaireId;
+    private Integer questionId;
+    private String questionAnswer;
 
     @Id
-    @javax.persistence.Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false)
     public int getId() {
         return id;
     }
@@ -18,10 +22,8 @@ public class Questionnaire {
         this.id = id;
     }
 
-    private Integer questionnaireId;
-
     @Basic
-    @javax.persistence.Column(name = "questionnaire_id", nullable = true)
+    @Column(name = "questionnaire_id", nullable = true)
     public Integer getQuestionnaireId() {
         return questionnaireId;
     }
@@ -30,10 +32,8 @@ public class Questionnaire {
         this.questionnaireId = questionnaireId;
     }
 
-    private Integer questionId;
-
     @Basic
-    @javax.persistence.Column(name = "question_id", nullable = true)
+    @Column(name = "question_id", nullable = true)
     public Integer getQuestionId() {
         return questionId;
     }
@@ -42,10 +42,8 @@ public class Questionnaire {
         this.questionId = questionId;
     }
 
-    private String questionAnswer;
-
     @Basic
-    @javax.persistence.Column(name = "question_answer", nullable = true, length = 10)
+    @Column(name = "question_answer", nullable = true, length = 10)
     public String getQuestionAnswer() {
         return questionAnswer;
     }

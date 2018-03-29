@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>编辑用户信息</title>
+    <title>修改个人信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -107,6 +107,8 @@
     var userID = data[1];
     console.info("data是:    " + data)
     console.info("UserID是:  " + userID);
+    //获取项目的根目录
+    getContextPath()
 
     //通过userID获取信息
     $.ajax({
@@ -294,7 +296,7 @@
                         layer.msg(data.data, {icon: 1});
                         setTimeout(function () {
                             // window.location.href="index.html?userName="+data.field.getUserName();
-                            window.location.href = "administrator.html";
+                            window.location.href = "index.html";
                         }, 1500)
                     } else {
                         layer.msg(data.data, {icon: 5});
@@ -332,6 +334,13 @@
         })
     });
 
+    //   获取项目的根目录
+    function getContextPath() {
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0, index + 1);
+        return result;
+    }
 
 </script>
 

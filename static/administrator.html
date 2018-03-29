@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>管理员界面</title>
     <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="css/xcConfirm.css"/>
+    <script src="js/jquery-1.9.1.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/xcConfirm.js" type="text/javascript" charset="utf-8"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="layui/css/layui.css" media="all">
@@ -13,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="layer/layer.js"></script>
+
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
@@ -36,7 +40,6 @@
             <li class="layui-nav-item" id="MyInfo">
                 <a href=""><img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="My_Head"><span id="MyName">我</span></a>
                 <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">修改信息</a></dd>
                     <dd><a href="javascript:;" id="login_out">退了</a></dd>
                 </dl>
             </li>
@@ -62,8 +65,8 @@
 <div id="nav_content"></div>
 
 
-<script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery-3.3.1.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
 <script src="layer/layer.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
@@ -118,9 +121,47 @@
 
     });
 
+    //事件的委托，使用ajax加载html界面时，使用委托才能调用html中的组件。
+    //问卷编辑
+    $("#nav_content").on("click", "#ques_edit", function () {
+        var id = $(this).parents("td").prevAll().siblings(":first").text();
+        var bro = $(this).parents("td").prevAll().siblings();
+        console.info("你选取的ID是:    " + id);
+        window.location.href = encodeURI("editQues.html?quesID=" + id);
+    });
 
-    <!--设置默认点击事件-->
-    $("#user_manage").trigger("click");
+
+    //问卷删除
+    $("#nav_content").on("click", "#ques_del", function () {
+        var id = $(this).parents("td").prevAll().siblings(":first").text();
+        console.info("你选取的ID是:    " + id)
+
+        $.ajax({
+            type: "post",
+            method: "post",
+            url: "/admin/deleteQues",
+            data: {"quesID": id},
+            async: false,
+            success: function (data) {
+                console.info("删除的结果:    " + data.result)
+                if (data.result == "success") {
+                    $.ajax({
+                        url: "questionalmanage.html", //这里是静态页的地址
+                        type: "GET", //静态页用get方法，否则服务器会抛出405错误
+                        success: function (data) {
+                            // var result = $(data).find("#nav_content");
+                            $("#nav_content").html(data);
+                        }
+                    });
+                } else {
+                    layer.msg("删除失败")
+                }
+            }
+        });
+
+
+    });
+
     var user_data;
     $.ajax({
         type: "post",
@@ -185,18 +226,18 @@
         });
     });
 
-    //设置"热门问卷"的默认点击事件
-    $("#user_manage").click(function () {
-        $.ajax({
-            url: "usermanager.html", //这里是静态页的地址
-            type: "GET", //静态页用get方法，否则服务器会抛出405错误
-            success: function (data) {
-                // var result = $(data).find("#nav_content");
-                $("#nav_content").html(data);
-
-            }
-        });
-    })
+    // //设置"用户管理"的默认点击事件
+    // $("#user_manage").click(function () {
+    //     $.ajax({
+    //         url: "usermanager.html", //这里是静态页的地址
+    //         type: "GET", //静态页用get方法，否则服务器会抛出405错误
+    //         success: function (data) {
+    //             // var result = $(data).find("#nav_content");
+    //             $("#nav_content").html(data);
+    //
+    //         }
+    //     });
+    // })
 
 
     layui.use('element', function () {

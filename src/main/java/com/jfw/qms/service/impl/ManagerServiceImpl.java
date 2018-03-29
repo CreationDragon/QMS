@@ -1,5 +1,7 @@
 package com.jfw.qms.service.impl;
 
+import com.jfw.qms.entity.Question;
+import com.jfw.qms.entity.Questionnaire;
 import com.jfw.qms.entity.User;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.repository.ManagerRepository;
@@ -15,6 +17,8 @@ public class ManagerServiceImpl implements ManagerService {
     private List<User> users = new ArrayList<>();
     private List<com.jfw.qms.model.User> userList;
     private com.jfw.qms.model.User user;
+    private List<Question> questions = new ArrayList<>();
+    private List<com.jfw.qms.model.Question> questionList = new ArrayList<>();
     @Autowired
     private ManagerRepository managerRepository;
 
@@ -66,5 +70,58 @@ public class ManagerServiceImpl implements ManagerService {
         ThreeArea threeArea = new ThreeArea();
         threeArea = managerRepository.getAreaById(provinceID, cityID, districtID);
         return threeArea;
+    }
+
+    @Override
+    public String editUser(com.jfw.qms.model.User user, String userID) {
+        Integer userid = Integer.parseInt(userID);
+        String msg = managerRepository.editUser(user, userid);
+        return msg;
+    }
+
+    @Override
+    public List<com.jfw.qms.model.Question> getQuestionnaire() {
+        questionList = new ArrayList<>();
+        questions = managerRepository.getQuestionnaire();
+        com.jfw.qms.model.Question question = new com.jfw.qms.model.Question();
+
+        for (Question q : questions
+                ) {
+            question = new com.jfw.qms.model.Question();
+            question.setQuestionId(q.getQuestionId());
+            question.setTitle(q.getTitle());
+            question.setAnswerA(q.getAnswerA());
+            question.setAnswerB(q.getAnswerB());
+            question.setAnswerC(q.getAnswerC());
+            question.setAnswerD(q.getAnswerD());
+            question.setOption("<div><i class=\"layui-icon\" style=\"font-size: 30px;color: #009688\" id=\"ques_edit\">&#xe642;</i></i><i class=\"layui-icon\"style=\"font-size: 30px;color: #009688\" id=\"ques_del\">&#xe640;</i></div>");
+            questionList.add(question);
+        }
+
+
+        return questionList;
+    }
+
+    @Override
+    public Integer deleteQues(String quesID) {
+
+        Integer quesid = Integer.parseInt(quesID);
+        Integer result = managerRepository.deleteQues(quesid);
+        return result;
+    }
+
+    @Override
+    public Question getQuestionInfoById(String quesID) {
+        Integer quesid = Integer.parseInt(quesID);
+        Question question = new Question();
+        question = managerRepository.getQuestionInfoById(quesid);
+        return question;
+    }
+
+    @Override
+    public String editQues(String title, String answerA, String answerB, String answerC, String answerD, String quesID) {
+        Integer quesid = Integer.parseInt(quesID);
+        String msg = managerRepository.editQues(title, answerA, answerB, answerC, answerD, quesid);
+        return msg;
     }
 }

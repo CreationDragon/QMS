@@ -97,17 +97,19 @@
     var city;
     var district;
     <!--获取index.html中a标签传递的参数-->
-    var data = decodeURI(window.location.href).split("?")[1].split("&");
-    var userName = data[0];
-    var userPsw = data[1];
-    var userAuthority = data[2];
+    // var data = decodeURI(window.location.href).split("?")[1].split("&");
+    // var userName = data[0];
+    // var userPsw = data[1];
+    // var userAuthority = data[2];
+    var userID = decodeURI(window.location.href).split("?")[1];
 
 
     //通过userName和userPsw获取信息
     $.ajax({
         url: "getInfo",
         type: "post",
-        data: {userName: userName, userPsw: userPsw},
+        // data: {userName: userName, userPsw: userPsw},
+        data: {"userID": userID},
         method: "post",
         datatype: "json",
         async: false,

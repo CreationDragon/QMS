@@ -41,7 +41,7 @@
             <li class="layui-nav-item" id="MyInfo">
                 <a href=""><img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="My_Head"><span id="MyName">我</span></a>
                 <dl class="layui-nav-child">
-                    <dd><a href="javascript:;">修改信息</a></dd>
+                    <dd><a href="javascript:;" id="modify_userInfo">修改信息</a></dd>
                     <dd><a href="javascript:;" id="login_out">退了</a></dd>
                 </dl>
             </li>
@@ -71,6 +71,7 @@
 <script src="js/jquery-3.3.1.js"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
+    var userID;
     // 默认加载热门问卷
     $.ajax({
         url: "HotQuestionnaire.html", //这里是静态页的地址
@@ -110,7 +111,7 @@
             if (user_data.data.userName == null || user_data.data.userPsw == null) {
                 layer.msg("请先登录,只有登陆之后才能查看个人信息");
             } else {
-                window.location.href = encodeURI("persionalinfo.html?userName=" + user_data.data.userName + "&userPsw=" + user_data.data.userPsw);
+                window.location.href = encodeURI("persionalinfo.html?userID=" + user_data.data.userID);
             }
         });
 
@@ -129,6 +130,10 @@
 
     });
 
+    //修改个人信息
+    $("#modify_userInfo").click(function () {
+        window.location.href = encodeURI("modifyUser.html?userID=" + user_data.data.userId);
+    })
 
     $("#login_out").click(function () {
         $.ajax({
