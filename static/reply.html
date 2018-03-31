@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息回复</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
+</head>
+<body>
+
+<form class="layui-form" action="">
+
+
+    <form class="layui-form" action="">
+        <div class="layui-form-item" style="margin-top: 20px">
+            <label class="layui-form-label">留言人</label>
+            <div class="layui-input-inline">
+                <input type="text" name="userName" id="userName"
+                       autocomplete="off" class="layui-input layui-disabled" disabled>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text" style="margin-top: 60px">
+            <label class="layui-form-label">留言内容</label>
+            <div class="layui-input-block">
+                <textarea id="messageContent" name="messageContent" class="layui-textarea  layui-disabled"
+                          disabled></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text" style="margin-top: 80px">
+            <label class="layui-form-label">回复内容</label>
+            <div class="layui-input-block">
+                <textarea id="replyContent" name="replyContent" placeholder="请输入回复内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">确认</button>
+            </div>
+        </div>
+    </form>
+
+
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <script>
+        var userID = window.location.href.split("?")[1].split("=")[1];
+        var adminID = window.location.href.split("?")[3].split("=")[1];
+        var messageID = window.location.href.split("?")[2].split("=")[1];
+        var userEmail = null;
+        var adminEmail = null;
+        var userName = null;
+        console.info("userID:    " + userID + "adminID:   " + adminID + "messageID:   " + messageID)
+        //获取用户的基本信息
+        $.ajax({
+            type: "post",
+            method: "post",
+            url: "/getUserId",
+            async: false,
+            success: function (data) {
+                console.info("用户的ID:    " + data);
+                adminID = data;
+                //
+                <!--获取留言信息-->
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/admin/getMessageById",
+                    data: {"adminID": adminID, "messageID": messageID},
+                    async: false,
+                    success: function (data) {
+                        var result = data.data;
+                        console.info("result:   " + result)
+                        $("#userName").val(result[0].userName)
+                        $("#messageContent").val(result[0].messageContent)
+                        userEmail = result[0].userEmail;
+                        adminEmail = result[0].adminEnail;
+                        userName = result[0].userName;
+                    }
+                });
+
+
+            }
+        });
+
+        //Demo
+        layui.use('form', function () {
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/admin/replyUser",
+                    data: {
+                        "messageID": messageID,
+                        "userEmail": userEmail,
+                        "replyContent": data.field.replyContent,
+                        "adminEmail": adminEmail,
+                        "userName": userName
+                    },
+                    async: false,
+                    success: function (data) {
+                        var flag = data.result;
+                        console.info("result:   " + data.result)
+                        if (flag) {
+                            layer.msg("回复成功")
+                            setTimeout(function () {
+                                window.location.href = "administrator.html"
+                            }, 2000);
+                        }
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+</form>
+</body>
+</html>

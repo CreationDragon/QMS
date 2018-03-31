@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>留言</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/index.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择框</label>
+        <div class="layui-input-block">
+            <select name="admin_id" lay-verify="required" id="adminInfo">
+                <option value="" selected="" class="adminInfo">请选择相关人员</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">留言内容</label>
+        <div class="layui-input-block">
+            <textarea name="message_content" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+</form>
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+    var userID = null;
+    //获取用户的基本信息
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/getUserId",
+        async: false,
+        success: function (data) {
+            console.info("用户的ID:    " + data);
+            userID = data;
+
+            if (data !== "") {
+                //
+                <!--获取管理员的信息-->
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getAdminInfo",
+                    async: false,
+                    success: function (data) {
+                        var result = data.data;
+                        $.each(result, function (i) {
+                            $("#adminInfo").append("<option value=" + result[i].userId + ">" + result[i].userName + "</option>;");
+                        })
+                    }
+                });
+            } else {
+                layer.msg("为了准确反馈，请登录")
+            }
+
+        }
+    });
+
+
+    //Demo
+    layui.use(['form'], function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            $.ajax({
+                type: "post",
+                method: "post",
+                url: "/putMessage",
+                data: {"data": JSON.stringify(data.field), "userID": userID},
+                async: false,
+                success: function (data) {
+                    console.info("提交留言后的反馈: " + data)
+                    if (data.result == "success") {
+                        layer.msg(data.data)
+                        setTimeout(function () {
+                            window.location.href = "index.html";
+                        }, 1500)
+                    } else {
+                        layer.msg(data.data);
+                    }
+                }
+            });
+
+            return false;
+        });
+    });
+
+
+</script>
+</body>
+</html>

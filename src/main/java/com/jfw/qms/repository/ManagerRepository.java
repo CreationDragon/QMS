@@ -1,6 +1,7 @@
 package com.jfw.qms.repository;
 
 import com.jfw.qms.entity.*;
+import com.jfw.qms.model.Message;
 import com.jfw.qms.model.ThreeArea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,6 +20,7 @@ public class ManagerRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private List<Question> questions = new ArrayList<>();
+    private List<Message> messageList = new ArrayList<>();
 
     public List<User> getUser() {
         users = jdbcTemplate.query("SELECT * FROM USER WHERE user_state=0", new RowMapper<User>() {
@@ -163,5 +165,58 @@ public class ManagerRepository {
         msg = "修改成功";
 
         return msg;
+    }
+
+    public List<Message> getMessage(Integer adminid) {
+        messageList = jdbcTemplate.query("SELECT * FROM message WHERE admin_id=? AND reply_state='0';", new Object[]{adminid}, new RowMapper<Message>() {
+            @Override
+            public Message mapRow(ResultSet resultSet, int i) throws SQLException {
+                Message message = new Message();
+                String userName = jdbcTemplate.queryForObject("SELECT user_name FROM USER WHERE user_id=" + resultSet.getInt("user_id"), String.class);
+                String user_email = jdbcTemplate.queryForObject("SELECT user_email FROM USER WHERE user_id=" + resultSet.getInt("user_id"), String.class);
+                String admin_email = jdbcTemplate.queryForObject("SELECT user_email FROM USER WHERE user_id=" + resultSet.getInt("admin_id"), String.class);
+                message.setAdminId(resultSet.getInt("admin_id"));
+                message.setMessageContent(resultSet.getString("message_content"));
+                message.setMessageId(resultSet.getInt("message_id"));
+                message.setReplyState(resultSet.getInt("reply_state"));
+                message.setUserId(resultSet.getInt("user_id"));
+                message.setUserName(userName);
+                message.setUserEmail(user_email);
+                message.setAdminEnail(admin_email);
+                return message;
+            }
+        });
+
+        return messageList;
+    }
+
+    public List<Message> getMessageById(Integer adminid, Integer messageid) {
+        messageList = jdbcTemplate.query("SELECT * FROM message WHERE admin_id=? AND reply_state='0'AND message_id=?;", new Object[]{adminid, messageid}, new RowMapper<Message>() {
+            @Override
+            public Message mapRow(ResultSet resultSet, int i) throws SQLException {
+                Message message = new Message();
+                String userName = jdbcTemplate.queryForObject("SELECT user_name FROM USER WHERE user_id=" + resultSet.getInt("user_id"), String.class);
+                String userEmail = jdbcTemplate.queryForObject("SELECT user_email FROM USER WHERE user_id=" + resultSet.getInt("user_id"), String.class);
+                String adminEmail = jdbcTemplate.queryForObject("SELECT user_email FROM USER WHERE user_id=" + resultSet.getInt("admin_id"), String.class);
+                message.setAdminId(resultSet.getInt("admin_id"));
+                message.setMessageContent(resultSet.getString("message_content"));
+                message.setMessageId(resultSet.getInt("message_id"));
+                message.setReplyState(resultSet.getInt("reply_state"));
+                message.setUserId(resultSet.getInt("user_id"));
+                message.setUserName(userName);
+                message.setUserEmail(userEmail);
+                message.setAdminEnail(adminEmail);
+                return message;
+            }
+        });
+
+        return messageList;
+    }
+
+    public Integer replyUser(Integer messageID, String userEmail, String s, String email) {
+        Integer value = jdbcTemplate.update("UPDATE message SET reply_state = ?,reply_content=? WHERE message_id=?",
+                new Object[]{1, s, messageID});
+
+        return value;
     }
 }

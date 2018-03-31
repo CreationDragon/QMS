@@ -1,0 +1,32 @@
+#message_content {
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#keyword {
+    width: 600px;
+    float: left;
+}
+
+#reply {
+    float: left;
+    margin-left: 20px;
+}
+
+#clear {
+    clear: both;
+}
+
+#content {
+    margin-top: 50px;
+}
+
+.answer {
+    padding-top: 10px;
+    margin-left: 250px;
+}
+
+.title {
+    font-size: 20px;
+}

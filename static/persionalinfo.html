@@ -24,7 +24,7 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label">头像</label>
-        <img src="resources/imges/1.png" class="image" id="My_Head">
+        <img src="resources/imges/1.png" class="layui-nav-img" id="My_Head" style="height: 100px;width: 100px">
     </div>
 
     <div class="layui-form-item">
@@ -123,6 +123,7 @@
             console.info(result);
             $("#username").val(result.userName);
             $("#password").val(result.userPsw);
+            $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
             $("#phone").val(result.userPhone).attr('selected', true);
             $("#email").val(result.userEmail).attr('selected', true);
             $("#address_detail").val(result.userAddressDetail);

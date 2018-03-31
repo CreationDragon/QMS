@@ -1,21 +1,32 @@
 package com.jfw.qms.controller;
 
+import cn.afterturn.easypoi.word.WordExportUtil;
 import com.alibaba.fastjson.JSON;
-import com.jfw.qms.model.ThreeArea;
-import com.jfw.qms.model.User;
+import com.jfw.qms.entity.Message;
+import com.jfw.qms.entity.Question;
 import com.jfw.qms.model.Area;
 import com.jfw.qms.model.JsonResult;
+import com.jfw.qms.model.ThreeArea;
+import com.jfw.qms.model.User;
 import com.jfw.qms.service.IndexService;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class IndexController {
@@ -25,6 +36,8 @@ public class IndexController {
     private HttpSession session;
     private JsonResult result = new JsonResult();
     private User user = new User();
+    private List<Question> questionList = new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
 
     @RequestMapping(path = "/index")
     public JsonResult getIndex(HttpServletRequest request, Model model) {
@@ -119,7 +132,7 @@ public class IndexController {
     public JsonResult Login(HttpServletRequest request, @RequestParam String userName, @RequestParam String userPsw) {
 
         session = request.getSession();
-
+        user = new User();
         user = indexService.login(userName, userPsw);
 
         if (user.getUserAuthority() == 1) {
@@ -183,6 +196,7 @@ public class IndexController {
         } else {
             session.removeAttribute("user_name");
             session.removeAttribute("user_psw");
+            session.removeAttribute("user_id");
 
             result.setResult("success");
             result.setData("success");
@@ -193,16 +207,24 @@ public class IndexController {
 
 
     @PostMapping(path = "/upload/head")
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, @RequestParam String userID) {
+        String root = null;
 
         if (null != file) {
             String myFileName = file.getOriginalFilename();// 文件原名称
+            try {
+                root = String.valueOf(ResourceUtils.getURL("application.properties"));
+                System.out.println(root);
 
-            File fileDir = new File("D://image");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String pathname = root.split("file:/")[1].split("application.properties")[0] + "/static/headpic";
+            File fileDir = new File(pathname);
             if (!fileDir.exists()) { //如果不存在 则创建
                 fileDir.mkdirs();
             }
-            String path = "D://image//head.png";
+            String path = pathname + "/" + userID + ".jpg";
             File localFile = new File(path);
             try {
                 file.transferTo(localFile);
@@ -217,8 +239,136 @@ public class IndexController {
         } else {
             System.out.println("文件为空");
         }
-        return null;
+        return "success";
 
     }
 
+    @PostMapping(path = "/quesSearch")
+    public JsonResult quesSearch(@RequestParam String keyword) {
+        result = new JsonResult();
+        questionList = indexService.quesSearch(keyword);
+        if (questionList.size() != 0) {
+            result.setResult("success");
+        } else {
+            result.setResult("fail");
+        }
+        result.setData(questionList);
+        return result;
+
+    }
+
+    @PostMapping(path = "/getAdminInfo")
+    public JsonResult getAdminInfo() {
+        result = new JsonResult();
+        userList = indexService.getAdminInfo();
+        result.setResult("success");
+        result.setData(userList);
+
+        return result;
+    }
+
+    @PostMapping(path = "/putMessage")
+    public JsonResult putMessage(@RequestParam String data, @RequestParam Integer userID) {
+        Message message = JSON.parseObject(data, Message.class);
+        result = new JsonResult();
+
+        int count = indexService.putMessage(message, userID);
+
+        result.setResult("success");
+        if (count > 0) {
+            result.setResult("success");
+            result.setData("留言成功");
+        } else {
+            result.setResult("faile");
+            result.setData("留言失败");
+        }
+        return result;
+
+    }
+
+    //    单独的一个功能获取用户的ID
+    @PostMapping("/getUserId")
+    public Integer getUserId() {
+        Integer id = null;
+        try {
+            Integer user_id = (Integer) session.getAttribute("user_id");
+            id = user_id;
+        } catch (Exception e) {
+            id = null;
+        }
+        return id;
+    }
+
+    @PostMapping(path = "/getAllQues")
+    public JsonResult getAllQues() {
+        result = new JsonResult();
+        List<Integer> quesIDs = new ArrayList<>();
+        quesIDs = indexService.getAllQues();
+        if (quesIDs.size() != 0) {
+            result.setResult("success");
+            result.setData(quesIDs);
+        } else {
+            result.setResult("fail");
+            result.setData("");
+        }
+        return result;
+    }
+
+    @PostMapping(path = "/getQuesById")
+    public JsonResult getQuesById(@RequestParam Integer quesID) {
+        result = new JsonResult();
+        questionList = indexService.getQuesById(quesID);
+        if (questionList.size() != 0) {
+            result.setResult("success");
+            result.setData(questionList);
+        } else {
+            result.setResult("success");
+            result.setData(questionList);
+        }
+        return result;
+    }
+
+    @RequestMapping(path = "/downloadDoc")
+    public JsonResult downloadDoc(@RequestParam Integer quesID, HttpServletRequest request, HttpServletResponse response) {
+        result = new JsonResult();
+        questionList = indexService.getQuesById(quesID);
+        Map<String, Object> map = new HashMap<>();
+//        for (Question q : questionList
+//                ) {
+//            map.put("title", q.getTitle());
+//            map.put("answerA", q.getAnswerA());
+//            map.put("answerB", q.getAnswerB());
+//            map.put("answerC", q.getAnswerC());
+//            map.put("answerD", q.getAnswerD());
+//        }
+        map.put("title", questionList.get(0).getTitle());
+        map.put("answerA", questionList.get(0).getAnswerA());
+        map.put("answerB", questionList.get(0).getAnswerB());
+        map.put("answerC", questionList.get(0).getAnswerC());
+        map.put("answerD", questionList.get(0).getAnswerD());
+
+        try {
+            XWPFDocument doc = WordExportUtil.exportWord07("D://model.docx", map);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            doc.write(bos);
+            byte[] content = bos.toByteArray();
+            String filename = "问卷.docx";
+            String userAgent = request.getHeader("User_Agent");
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+                filename = URLEncoder.encode(filename, "utf-8");
+            } else {
+                filename = new String(filename.getBytes("utf-8"), "ISO-8859-1");
+            }
+            response.reset();
+            response.setContentType("application/msexcel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename=" + filename);
+            response.getOutputStream().write(content);
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

@@ -1,11 +1,12 @@
 package com.jfw.qms.service.impl;
 
+import com.jfw.qms.model.Message;
 import com.jfw.qms.entity.Question;
-import com.jfw.qms.entity.Questionnaire;
 import com.jfw.qms.entity.User;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.repository.ManagerRepository;
 import com.jfw.qms.service.ManagerService;
+import com.jfw.qms.utils.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class ManagerServiceImpl implements ManagerService {
     private com.jfw.qms.model.User user;
     private List<Question> questions = new ArrayList<>();
     private List<com.jfw.qms.model.Question> questionList = new ArrayList<>();
+    private List<Message> messageList = new ArrayList<>();
     @Autowired
     private ManagerRepository managerRepository;
 
@@ -124,4 +126,39 @@ public class ManagerServiceImpl implements ManagerService {
         String msg = managerRepository.editQues(title, answerA, answerB, answerC, answerD, quesid);
         return msg;
     }
+
+    @Override
+    public List<Message> getMessage(String adminID) {
+        Integer adminid = Integer.parseInt(adminID);
+        messageList = managerRepository.getMessage(adminid);
+        return messageList;
+    }
+
+    @Override
+    public List<Message> getMessageById(String adminID, String messageID) {
+        Integer adminid = Integer.parseInt(adminID);
+        Integer messageid = Integer.parseInt(messageID);
+        messageList = managerRepository.getMessageById(adminid, messageid);
+        return messageList;
+    }
+
+    @Override
+    public boolean replyUser(Integer messageID, String userEmail, String replyContent, String adminEmail, String userName) {
+        boolean flag = false;
+
+        Integer val = managerRepository.replyUser(messageID, userEmail, replyContent, adminEmail);
+
+        if (val != 0) {
+            try {
+                EmailUtils.sendEmail(replyContent, userEmail, adminEmail, userName);
+                flag = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return flag;
+    }
+
+
 }

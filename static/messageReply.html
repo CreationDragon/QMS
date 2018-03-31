@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>留言回复</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/messageReply.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
+</head>
+<body>
+
+
+<div id="reply_content"></div>
+
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+    var adminID = null;
+    var messageID = null;
+    //获取用户的基本信息
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/getUserId",
+        async: false,
+        success: function (data) {
+            console.info("用户的ID:    " + data);
+            adminID = data;
+            //
+            <!--获取留言信息-->
+            $.ajax({
+                type: "post",
+                method: "post",
+                url: "/admin/getMessage",
+                data: {"adminID": adminID},
+                async: false,
+                success: function (data) {
+                    var result = data.data;
+                    console.info("result:   " + result)
+                    $.each(result, function (i) {
+                        $("#reply_content").append(" <div class=\"layui-form-item\" id=\"contain\">\n" +
+                            "        <input type=\"text\" name=\"message\" autocomplete=\"off\"\n" +
+                            "               class=\"layui-input layui-disabled\"disabled id=\"keyword\" value=" + result[i].messageContent + ">\n" +
+                            "        <div id=\"reply\"  class='reply'><button class=\"layui-btn\" value=" + result[i].messageId + " id=" + result[i].userId + ">回复</button></div>\n" +
+                            "        <div id=\"clear\"></div>\n" +
+                            "\n" +
+                            "        <div id=\"content\">\n" +
+                            "\n" +
+                            "        </div>\n" +
+                            "    </div>");
+
+                    });
+                    $(function () {
+                        $(".reply").click(function () {
+                            var userID = $(this).children(":first").attr("id");
+                            messageID = $(this).children(":first").attr("value");
+                            console.info("messageID:  " + messageID)
+                            //    回复
+                            window.location.href = "reply.html?userID=" + userID + "?messageID=" + messageID + "?adminID=" + adminID
+                        })
+                    })
+
+                }
+            });
+
+
+        }
+    });
+
+
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

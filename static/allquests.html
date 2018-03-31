@@ -2,37 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="../js/jquery-3.3.1.js"></script>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/allquests.css">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
 </head>
 <body>
-<div id="quest">
-    <div id="quest_content">
-        <table cellspacing="5px">
-            <tr>
-                <td><img src="../resources/imges/1.png"></td>
-                <td><img src="../resources/imges/1.png"></td>
-            </tr>
-            <tr>
-                <td><img src="../resources/imges/1.png"></td>
-                <td><img src="../resources/imges/1.png"></td>
-            </tr>
-            <tr>
-                <td><img src="../resources/imges/1.png"></td>
-                <td><img src="../resources/imges/1.png"></td>
-            </tr>
-            <tr>
-                <td><img src="../resources/imges/1.png"></td>
-                <td><img src="../resources/imges/1.png"></td>
-            </tr>
-        </table>
-    </div>
-</div>
+
+<div id="ques_content"></div>
 
 
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
 <script>
-    $("img").click(function () {
-        $("#quest_content").load("questionnaire.html");
+    $(function () {
+
+        $.ajax({
+            type: "post",
+            method: "post",
+            url: "/getAllQues",
+            async: false,
+            success: function (data) {
+                // $("#ques_content").empty();
+                console.info(data.data[0])
+                if (data.result == "success") {
+                    $.each(data.data, function (i) {
+                        $("#ques_content").append("<a href='detailedQuestion.html?quesID=" + data.data[i] + "'style='margin-top: 20px;width: 200px' >问卷" + data.data[i] + "</a>");
+                    })
+                } else {
+                    layer.msg("未发现相关的问卷信息");
+                }
+            }
+        });
+
     })
+
 </script>
 
 </body>

@@ -1,0 +1,32 @@
+#contain {
+    margin-top: 20px;
+    margin-left: 100px;
+    align-items: center;
+}
+
+#keyword {
+    width: 600px;
+    float: left;
+}
+
+#search {
+    float: left;
+    margin-left: 20px;
+}
+
+#clear {
+    clear: both;
+}
+
+#content {
+    margin-top: 50px;
+}
+
+.answer {
+    padding-top: 10px;
+    margin-left: 250px;
+}
+
+.title {
+    font-size: 20px;
+}

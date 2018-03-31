@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>问卷详细内容</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/index.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
+</head>
+<body>
+
+<form class="layui-form" action="" style="margin-top: 20px;">
+
+    <div class="layui-form-item">
+        <div class="layui-input-block"></div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="radio" name="like" value="checkbox" title="写作">
+                <input type="radio" name="like" value="checkbox" title="阅读" checked>
+                <input type="radio" name="like" value="checkbox" title="发呆">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+</script>
+
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+    var quesID = window.location.href.split("=")[1];
+    console.info(quesID);
+    //    根据quesID 获取详细的question
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/getQuesById",
+        data: {"quesID": quesID},
+        async: false,
+        success: function (data) {
+            var quest = data.data;
+            $(".layui-form").empty();
+            $.each(data.data, function (i) {
+                var count = i + 1;
+                $(".layui-form").append("<div class=\"layui-form-item\">\n" +
+                    "        <div class=\"layui-input-block\">" + count + "、" + quest[i].title + "</div>\n" +
+                    "\n" +
+                    "        <div class=\"layui-form-item\">\n" +
+                    "            <div class=\"layui-input-block\">\n" +
+                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerA + ">\n" +
+                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerB + ">\n" +
+                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerC + ">\n" +
+                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerD + ">\n" +
+                    "\n" +
+                    "            </div>\n" +
+                    "        </div>" +
+                    "")
+            })
+
+            $(".layui-form").append("  <div class=\"layui-form-item\">\n" +
+                "    <div class=\"layui-input-block\">\n" +
+                "      <button class=\"layui-btn\" lay-submit lay-filter=\"formDemo\">立即提交</button>\n" +
+                "      <button type=\"button\" class=\"layui-btn layui-btn-primary\" id='download'><a  href='http://localhost:8181/headpic/4.jpg' download=''>下载问卷</a></button>\n" +
+                "    </div>\n" +
+                "  </div>");
+
+        }
+    });
+
+    //实现复选框的单选功能
+    $(function () {
+        $("#download").click(function () {
+            alert("下载问卷")
+            $.ajax({
+                type: "post",
+                method: "post",
+                url: "/downloadDoc",
+                data: {"quesID": quesID},
+                async: false,
+                success: function (data) {
+
+                }
+            });
+
+
+        })
+    });
+
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

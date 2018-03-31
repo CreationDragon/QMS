@@ -1,6 +1,7 @@
 package com.jfw.qms.service;
 
 import com.jfw.qms.entity.Question;
+import com.jfw.qms.model.Message;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.model.User;
 
@@ -24,4 +25,10 @@ public interface ManagerService {
     Question getQuestionInfoById(String quesID);
 
     String editQues(String title, String answerA, String answerB, String answerC, String answerD, String quesID);
+
+    List<com.jfw.qms.model.Message> getMessage(String adminID);
+
+    List<Message> getMessageById(String adminID, String messageID);
+
+    boolean replyUser(Integer messageID, String userEmail, String replyContent, String adminEmail, String userName);
 }

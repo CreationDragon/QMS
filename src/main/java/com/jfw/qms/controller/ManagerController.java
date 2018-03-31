@@ -1,9 +1,8 @@
 package com.jfw.qms.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
-import com.jfw.qms.entity.Questionnaire;
-import com.jfw.qms.entity.User;
 import com.jfw.qms.model.JsonResult;
 import com.jfw.qms.model.QuestionnaireInfo;
 import com.jfw.qms.model.TableInfo;
@@ -29,6 +28,7 @@ public class ManagerController {
     private TableInfo tableInfo = new TableInfo();
     private QuestionnaireInfo questionnaireInfo = new QuestionnaireInfo();
     private String msg;
+    private List<com.jfw.qms.model.Message> messageList = new ArrayList<>();
     @Autowired
     private ManagerService managerService;
 
@@ -149,7 +149,46 @@ public class ManagerController {
         result.setData(msg);
         return result;
 
+    }
+
+    @PostMapping(path = "/admin/getMessage")
+    public JsonResult getMessage(@RequestParam String adminID) {
+        result = new JsonResult();
+        messageList = managerService.getMessage(adminID);
+
+        result.setResult("success");
+        result.setData(messageList);
+
+        return result;
 
     }
+
+
+    @PostMapping(path = "/admin/getMessageById")
+    public JsonResult getMessageById(@RequestParam String adminID, @RequestParam String messageID) {
+        result = new JsonResult();
+        messageList = managerService.getMessageById(adminID, messageID);
+
+        result.setResult("success");
+        result.setData(messageList);
+
+        return result;
+
+    }
+
+    @PostMapping(path = "/admin/replyUser")
+    public JsonResult replyUser(@RequestParam Integer messageID, @RequestParam String userEmail, @RequestParam String replyContent, @RequestParam String adminEmail, @RequestParam String userName) {
+        result = new JsonResult();
+        boolean flag = managerService.replyUser(messageID, userEmail, replyContent, adminEmail, userName);
+        if (flag) {
+            result.setResult("success");
+        } else {
+            result.setResult("fail");
+        }
+
+        return result;
+
+    }
+
 
 }

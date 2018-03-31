@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="js/jquery-3.3.1.js"></script>
     <script src="layer/layer.js"></script>
+    <!--<link rel="stylesheet" href="css/quesSearch.css">-->
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
@@ -25,9 +26,9 @@
             <li class="layui-nav-item layui-this">
                 <a href="javascript:;" id="hot_questionnaire">热门问卷</a>
             </li>
-            <li class="layui-nav-item"><a href="">问卷搜索</a></li>
-            <li class="layui-nav-item"><a href="">留言</a></li>
-            <li class="layui-nav-item"><a href="">统计分析</a></li>
+            <li class="layui-nav-item" id="questionnaire_search"><a>问卷搜索</a></li>
+            <li class="layui-nav-item" id="message"><a>留言</a></li>
+            <li class="layui-nav-item"><a>统计分析</a></li>
         </ul>
     </div>
 
@@ -67,8 +68,8 @@
 <div id="nav_content"></div>
 
 
-<script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery-3.3.1.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
     var userID;
@@ -83,7 +84,7 @@
         }
     });
     <!--设置默认点击事件-->
-    $("#hot_questionnaire").trigger("click");
+    // $("#hot_questionnaire").trigger("click");
     var user_data;
     $.ajax({
         type: "post",
@@ -101,12 +102,37 @@
                 $("#to_login").hide();
                 $("#horizon").hide();
                 $("#MyName").text(data.data.userName);
+                $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
             }
             console.info(data.data.userName);
         }
     });
 
     $(function () {
+        //问卷搜索
+        $("#questionnaire_search").click(function () {
+            $.ajax({
+                url: "quesSearch.html", //这里是静态页的地址
+                type: "GET", //静态页用get方法，否则服务器会抛出405错误
+                success: function (data) {
+                    // var result = $(data).find("#nav_content");
+                    $("#nav_content").html(data);
+                }
+            });
+        });
+        //    留言
+        $("#message").click(function () {
+            $.ajax({
+                url: "message.html", //这里是静态页的地址
+                data: {"userID": user_data.data.userId},
+                type: "GET", //静态页用get方法，否则服务器会抛出405错误
+                success: function (data) {
+                    // var result = $(data).find("#nav_content");
+                    $("#nav_content").html(data);
+                }
+            });
+        });
+        //个人信息
         $("#persional_info_center").click(function () {
             if (user_data.data.userName == null || user_data.data.userPsw == null) {
                 layer.msg("请先登录,只有登陆之后才能查看个人信息");
@@ -115,7 +141,7 @@
             }
         });
 
-
+        //登录
         $("#to_login").click(function () {
             $.ajax({
                 url: "login.html", //这里是静态页的地址
@@ -127,6 +153,7 @@
                 }
             });
         });
+
 
     });
 
@@ -174,6 +201,8 @@
             layer.msg(elem.text());
         });
     });
+
+
     $('#all').click(function () {
 
         $.ajax({
@@ -182,10 +211,8 @@
             success: function (data) {
                 // var result = $(data).find("#nav_content");
                 $("#nav_content").html(data);
-
             }
         });
-
     })
 
 

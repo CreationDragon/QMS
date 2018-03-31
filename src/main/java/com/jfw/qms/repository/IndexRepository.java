@@ -1,11 +1,13 @@
 package com.jfw.qms.repository;
 
+import com.jfw.qms.entity.Message;
 import com.jfw.qms.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,7 +21,7 @@ public class IndexRepository {
     private String msg;
     private User user;
     private List<User> userList;
-
+    private List<com.jfw.qms.entity.Question> questionList = new ArrayList<>();
 
     public Area getArea(Integer count, String sign) {
         if ("province".equals(sign)) {
@@ -90,5 +92,46 @@ public class IndexRepository {
         threeArea.setAreaDistrict(areaDistrict);
 
         return threeArea;
+    }
+
+    public List<com.jfw.qms.entity.Question> quesSearch(String keyword) {
+        questionList = jdbcTemplate.query("SELECT * FROM question WHERE title LIKE '%" + keyword + "%'", new BeanPropertyRowMapper<>(com.jfw.qms.entity.Question.class));
+        return questionList;
+    }
+
+    public List<User> getAdminInfo() {
+        userList = jdbcTemplate.query("SELECT * FROM USER WHERE user_authority = '1'", new BeanPropertyRowMapper<>(User.class));
+
+        return userList;
+    }
+
+    public int putMessage(Message data, Integer userID) {
+        int value = jdbcTemplate.update("INSERT INTO message(message_content, admin_id,user_id) VALUES(?,?,?) ",
+                new Object[]{
+                        data.getMessageContent(), data.getAdminId(), userID
+                });
+        return value;
+    }
+
+    public List<Integer> getAllQues() {
+//        List<Integer> quesIDs = jdbcTemplate.query("SELECT questionnaire_id FROM user_questionnaire ", Integer.class);
+        List<Integer> quesIDs = jdbcTemplate.queryForList("SELECT questionnaire_id FROM user_questionnaire ", Integer.class);
+        return quesIDs;
+
+    }
+
+    public List<com.jfw.qms.entity.Question> getQuesById(Integer quesnaireID) {
+        List<Integer> quesID = jdbcTemplate.queryForList("SELECT question_id FROM questionnaire WHERE questionnaire_id=" + quesnaireID, Integer.class);
+
+        questionList = new ArrayList<>();
+
+        for (Integer id : quesID
+                ) {
+            com.jfw.qms.entity.Question question = new com.jfw.qms.entity.Question();
+            question = jdbcTemplate.queryForObject("SELECT * FROM question WHERE question_id=" + id, new BeanPropertyRowMapper<>(com.jfw.qms.entity.Question.class));
+            questionList.add(question);
+        }
+
+        return questionList;
     }
 }

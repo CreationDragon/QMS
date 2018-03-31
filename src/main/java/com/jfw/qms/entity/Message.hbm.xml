@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.Message" table="message" schema="qms">
+        <id name="messageId">
+            <column name="message_id" sql-type="int(11)"/>
+        </id>
+        <property name="messageContent">
+            <column name="message_content" sql-type="varchar(500)" length="500" not-null="true"/>
+        </property>
+        <property name="adminId">
+            <column name="admin_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="replyState">
+            <column name="reply_state" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="userId">
+            <column name="user_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="replyContent">
+            <column name="reply_content" sql-type="varchar(500)" length="500" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

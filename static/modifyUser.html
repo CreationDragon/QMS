@@ -317,6 +317,7 @@
         var uploadInst = upload.render({
             elem: '#head_pic' //绑定元素
             , url: '/upload/head' //上传接口
+            , data: {"userID": userID}
             , done: function (res) {
                 //上传完毕回调
             }

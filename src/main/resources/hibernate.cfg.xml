@@ -27,6 +27,8 @@
       <mapping resource="com/jfw/qms/entity/Questionnaire.hbm.xml"/>
       <mapping class="com.jfw.qms.entity.UserQuestionnaire"/>
       <mapping resource="com/jfw/qms/entity/UserQuestionnaire.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.Message"/>
+      <mapping resource="com/jfw/qms/entity/Message.hbm.xml"/>
 
       <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
