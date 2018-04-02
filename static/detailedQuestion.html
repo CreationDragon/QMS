@@ -60,10 +60,10 @@
                     "\n" +
                     "        <div class=\"layui-form-item\">\n" +
                     "            <div class=\"layui-input-block\">\n" +
-                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerA + ">\n" +
-                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerB + ">\n" +
-                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerC + ">\n" +
-                    "                <input type=\"radio\" name=\"like\" value=\"checkbox\" title=" + quest[i].answerD + ">\n" +
+                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerA + ">\n" +
+                    "                <input type=\"radio\" name=\"like" + i + "\"  value=\"checkbox\" title=" + quest[i].answerB + ">\n" +
+                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerC + ">\n" +
+                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerD + ">\n" +
                     "\n" +
                     "            </div>\n" +
                     "        </div>" +
@@ -73,7 +73,7 @@
             $(".layui-form").append("  <div class=\"layui-form-item\">\n" +
                 "    <div class=\"layui-input-block\">\n" +
                 "      <button class=\"layui-btn\" lay-submit lay-filter=\"formDemo\">立即提交</button>\n" +
-                "      <button type=\"button\" class=\"layui-btn layui-btn-primary\" id='download'><a  href='http://localhost:8181/headpic/4.jpg' download=''>下载问卷</a></button>\n" +
+                "      <button type=\"button\" class=\"layui-btn layui-btn-primary\" id='download'><a  id='docDown' download=''>下载问卷</a></button>\n" +
                 "    </div>\n" +
                 "  </div>");
 
@@ -91,7 +91,7 @@
                 data: {"quesID": quesID},
                 async: false,
                 success: function (data) {
-
+                    $("#docDown").attr("href", "http://localhost:8181/word/问卷1.docx");
                 }
             });
 

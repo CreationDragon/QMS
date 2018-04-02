@@ -1,6 +1,5 @@
 package com.jfw.qms.controller;
 
-import cn.afterturn.easypoi.word.WordExportUtil;
 import com.alibaba.fastjson.JSON;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
@@ -9,7 +8,7 @@ import com.jfw.qms.model.JsonResult;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.model.User;
 import com.jfw.qms.service.IndexService;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import com.jfw.qms.utils.produceWordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
@@ -19,14 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class IndexController {
@@ -38,6 +33,7 @@ public class IndexController {
     private User user = new User();
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
+    private String root = null;
 
     @RequestMapping(path = "/index")
     public JsonResult getIndex(HttpServletRequest request, Model model) {
@@ -208,7 +204,6 @@ public class IndexController {
 
     @PostMapping(path = "/upload/head")
     public String upload(MultipartFile file, @RequestParam String userID) {
-        String root = null;
 
         if (null != file) {
             String myFileName = file.getOriginalFilename();// 文件原名称
@@ -332,43 +327,13 @@ public class IndexController {
     public JsonResult downloadDoc(@RequestParam Integer quesID, HttpServletRequest request, HttpServletResponse response) {
         result = new JsonResult();
         questionList = indexService.getQuesById(quesID);
-        Map<String, Object> map = new HashMap<>();
-//        for (Question q : questionList
-//                ) {
-//            map.put("title", q.getTitle());
-//            map.put("answerA", q.getAnswerA());
-//            map.put("answerB", q.getAnswerB());
-//            map.put("answerC", q.getAnswerC());
-//            map.put("answerD", q.getAnswerD());
-//        }
-        map.put("title", questionList.get(0).getTitle());
-        map.put("answerA", questionList.get(0).getAnswerA());
-        map.put("answerB", questionList.get(0).getAnswerB());
-        map.put("answerC", questionList.get(0).getAnswerC());
-        map.put("answerD", questionList.get(0).getAnswerD());
-
         try {
-            XWPFDocument doc = WordExportUtil.exportWord07("D://model.docx", map);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            doc.write(bos);
-            byte[] content = bos.toByteArray();
-            String filename = "问卷.docx";
-            String userAgent = request.getHeader("User_Agent");
-            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
-                filename = URLEncoder.encode(filename, "utf-8");
-            } else {
-                filename = new String(filename.getBytes("utf-8"), "ISO-8859-1");
-            }
-            response.reset();
-            response.setContentType("application/msexcel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename=" + filename);
-            response.getOutputStream().write(content);
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
-
+            root = String.valueOf(ResourceUtils.getURL("application.properties"));
+            produceWordUtil.produceWord(root, questionList, quesID);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return result;
     }
 }
