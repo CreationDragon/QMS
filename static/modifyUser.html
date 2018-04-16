@@ -40,17 +40,17 @@
         <label class="layui-form-label">住址</label>
         <div class="layui-input-inline">
             <select name="province" id="province" lay-filter="province">
-                <option value="" selected="" class="province">请选择省</option>
+                <option value="" class="province">请选择省</option>
             </select>
         </div>
         <div class="layui-input-inline">
             <select name="city" id="city" lay-filter="city">
-                <option value="" selected="" class="city">请选择市</option>
+                <option value="" class="city">请选择市</option>
             </select>
         </div>
         <div class="layui-input-inline">
             <select name="district" id="district">
-                <option value="" selected="" class="district">请选择县/区</option>
+                <option value="" class="district">请选择县/区</option>
             </select>
         </div>
     </div>
@@ -131,9 +131,9 @@
             $("#phone").val(result.userPhone).attr('selected', true);
             $("#email").val(result.userEmail).attr('selected', true);
             $("#address_detail").val(result.userAddressDetail);
-            $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
-            $("#city").append("<option value='" + city + "'>" + city + "</option>").val(city);
-            $("#district").append("<option value='" + district + "'>" + district + "</option>").val(district);
+            // $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
+            // $("#city").append("<option value='" + city + "'>" + city + "</option>").val(city);
+            // $("#district").append("<option value='" + district + "'>" + district + "</option>").val(district);
             if (data.data.userGener == "男") {
                 $("input[value='男']").attr('checked', 'true');
             } else {
@@ -200,8 +200,14 @@
         success: function (data) {   //如何发送成功
             var province = data.data.provinceList;
             $.each(province, function (id, name) {
-                if (name.provinceName != province) {
-                    select_province.append("<option value=" + name.provinceId + ">" + name.provinceName + "</option>;");
+                if (name.provinceName != province[id].provinceName) {
+
+                    console.info("privateName:  " + name.provinceName)
+                    console.info("id.provincce: " + province[id].provinceName)
+
+                    select_province.append("<option class='" + name.provinceId + "' value=" + name.provinceId + ">" + name.provinceName + "</option>;");
+                } else {
+                    select_province.append("<option selected='selected' value=" + name.provinceId + ">" + name.provinceName + "</option>;");
                 }
             })
         }

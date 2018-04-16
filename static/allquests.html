@@ -16,7 +16,11 @@
 </head>
 <body>
 
-<div id="ques_content"></div>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <div id="ques_content"></div>
+    </div>
+</form>
 
 
 <script src="js/jquery-3.3.1.js"></script>
@@ -24,7 +28,6 @@
 <script src="layui/layui.js" charset="utf-8"></script>
 <script>
     $(function () {
-
         $.ajax({
             type: "post",
             method: "post",
@@ -35,7 +38,8 @@
                 console.info(data.data[0])
                 if (data.result == "success") {
                     $.each(data.data, function (i) {
-                        $("#ques_content").append("<a href='detailedQuestion.html?quesID=" + data.data[i] + "'style='margin-top: 20px;width: 200px' >问卷" + data.data[i] + "</a>");
+                        // $("#ques_content").append("<a href='detailedQuestion.html?quesID=" + data.data[i].questionnaire_id + "'style='margin-top: 20px;width: 200px' >" + data.data[i].questionnaire_name + "</a><br>");
+                        $("#ques_content").append("<a style='margin-top: 20px;width: 200px'  onclick='judge(" + data.data[i].isEncrypt + "," + data.data[i].questionnaire_id + ")'>" + data.data[i].questionnaire_name + "</a><br>");
                     })
                 } else {
                     layer.msg("未发现相关的问卷信息");
@@ -43,7 +47,24 @@
             }
         });
 
+
     })
+
+    function judge(isEncrypt, questionnaire_id) {
+        if (isEncrypt != 1) {
+            $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
+        } else {
+            layer.prompt({title: '请输入密码', formType: 1}, function (pass, index) {
+                if (pass != "*****") {
+                    layer.msg("密码不匹配")
+                } else {
+                    layer.close(index);
+                    $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
+                }
+
+            });
+        }
+    }
 
 </script>
 

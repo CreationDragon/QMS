@@ -49,7 +49,8 @@
                         $("#content").append("<div class='title'>无数据</div>");
                     } else {
                         $.each(result, function (i) {
-                            $("#content").append("<div class='title'>" + result[i].title + "</div>");
+                            // $("#content").append("<div class='title' id='" + result[i].questionId + "'>" + result[i].title + "</div>");
+                            $("#content").append("<div class='title'><a href='detailQuests.html?quesId=" + result[i].questionId + "' id='" + result[i].questionId + "'>" + result[i].title + "</a></div>");
                             $("#content").append("<div><hr class='layui-bg-blue' style='width: 600px'></div>");
                         })
                     }
@@ -63,6 +64,8 @@
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
 
     });
+
+
 </script>
 
 </body>

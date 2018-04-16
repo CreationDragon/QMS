@@ -13,10 +13,27 @@
 
 <table class="layui-hide" id="test"></table>
 
+<div id="function">
+    <button class="layui-btn" id="questionnaire_add">
+        <i class="layui-icon">&#xe608;</i> 添加
+    </button>
+</div>
+
 <script src="js/jquery-3.3.1.js"></script>
 <script src="layui/layui.js"></script>
 <script>
-
+    var userId;
+    var questionnaireId;
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/getUserId",
+        async: false,
+        success: function (data) {
+            console.info("用户的ID:    " + data);
+            userId = data;
+        }
+    });
     $(".layui-form layui-border-box layui-table-view").css("height", "500px")
 
     layui.use('table', function () {
@@ -25,7 +42,7 @@
         //第一个实例
         table.render({
             elem: '#test'
-            , height: 315
+            , height: 600
             , url: '/admin/getQuestionnaire' //数据接口
             , page: true //开启分页
             , cols: [[ //表头
@@ -40,6 +57,59 @@
         });
     });
 
+    $(function () {
+        $("#questionnaire_add").click(function () {
+            //prompt层
+            layer.prompt({title: '新建问卷名称', formType: 2}, function (text, index) {
+                layer.close(index);
+                //添加问卷
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/admin/QuestionnaireAdd",
+                    data: {"userId": userId, "title": text},
+                    async: false,
+                    success: function (data) {
+                        var res = data.data;
+                        if (res != 0) {
+                            questionnaireId = res;
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                });
+
+                //iframe层
+                layer.open({
+                    type: 2,
+                    title: '添加问卷',
+                    shadeClose: true,
+                    shade: 0.8,
+                    btn: ['确认', '取消'],
+                    area: ['50%', '50%'],
+                    content: 'QuestionnaireAdd.html?questionnaireId=' + questionnaireId, //iframe的url
+                    yes: function () {
+                        // window.parent.location.reload();
+                        $.ajax({
+                            url: "questionalmanage.html", //这里是静态页的地址
+                            type: "GET", //静态页用get方法，否则服务器会抛出405错误
+                            success: function (data) {
+                                // var result = $(data).find("#nav_content");
+                                $("#nav_content").html(data);
+                            }
+                        });
+
+                        layer.closeAll()
+                    },
+                    no: function () {
+
+                    },
+                });
+            });
+
+        })
+    })
 </script>
 </body>
 </html>

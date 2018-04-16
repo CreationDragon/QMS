@@ -60,10 +60,10 @@
                     "\n" +
                     "        <div class=\"layui-form-item\">\n" +
                     "            <div class=\"layui-input-block\">\n" +
-                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerA + ">\n" +
-                    "                <input type=\"radio\" name=\"like" + i + "\"  value=\"checkbox\" title=" + quest[i].answerB + ">\n" +
-                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerC + ">\n" +
-                    "                <input type=\"radio\" name=\"like" + i + "\" value=\"checkbox\" title=" + quest[i].answerD + ">\n" +
+                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"A\" title=" + quest[i].answerA + ">\n" +
+                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\"  value=\"B\" title=" + quest[i].answerB + ">\n" +
+                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"C\" title=" + quest[i].answerC + ">\n" +
+                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"D\" title=" + quest[i].answerD + ">\n" +
                     "\n" +
                     "            </div>\n" +
                     "        </div>" +
@@ -72,7 +72,7 @@
 
             $(".layui-form").append("  <div class=\"layui-form-item\">\n" +
                 "    <div class=\"layui-input-block\">\n" +
-                "      <button class=\"layui-btn\" lay-submit lay-filter=\"formDemo\">立即提交</button>\n" +
+                "      <button class=\"layui-btn\" lay-submit lay-filter=\"formDemo\" id='submit'>立即提交</button>\n" +
                 "      <button type=\"button\" class=\"layui-btn layui-btn-primary\" id='download'><a  id='docDown' download=''>下载问卷</a></button>\n" +
                 "    </div>\n" +
                 "  </div>");
@@ -80,7 +80,7 @@
         }
     });
 
-    //实现复选框的单选功能
+    //下载问卷
     $(function () {
         $("#download").click(function () {
             alert("下载问卷")
@@ -91,7 +91,7 @@
                 data: {"quesID": quesID},
                 async: false,
                 success: function (data) {
-                    $("#docDown").attr("href", "http://localhost:8181/word/问卷1.docx");
+                    $("#docDown").attr("href", "http://localhost:8181/word/问卷" + quesID + ".docx");
                 }
             });
 
@@ -99,15 +99,57 @@
         })
     });
 
+
     //Demo
     layui.use('form', function () {
         var form = layui.form;
+        var userID = null;
+        //获取用户的基本信息
+        $.ajax({
+            type: "post",
+            method: "post",
+            url: "/getUserId",
+            async: false,
+            success: function (data) {
+                console.info("用户的ID:    " + data);
+                userID = data;
 
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
-            layer.msg(JSON.stringify(data.field));
-            return false;
-        });
+                if (data !== "") {
+
+                    //监听提交(立即提交)
+                    form.on('submit(formDemo)', function (data) {
+                        layer.msg(JSON.stringify(data.field));
+                        $.ajax({
+                            type: "post",
+                            method: "post",
+                            url: "/uploadAnswer",
+                            data: {
+                                "userID": userID,
+                                "questionnaireID": quesID,
+                                answer: JSON.stringify(data.field)
+                            },
+                            async: false,
+                            success: function (data) {
+                                if (data.data != 0) {
+                                    layer.msg("填写完毕，稍后自动跳转到首页");
+                                    setTimeout(function () {
+                                        window.location.href = "index.html"
+                                    }, 1500)
+                                } else {
+                                    layer.msg("提交出现问题，请稍后再试");
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                } else {
+                    layer.msg("未登录，无法提交问卷")
+                    $("#submit").attr("class", "layui-btn layui-btn-disabled");
+                    $("#submit").attr("disabled", "disabled");
+                    $("#submit").attr("id", "NoSubmit");
+                }
+            }
+        })
     });
 
 

@@ -45,18 +45,18 @@
     // 指定图表的配置项和数据
     var option = {
         title: {
-            text: 'ECharts 入门示例'
+            text: '问卷答复数'
         },
         tooltip: {},
         legend: {
-            data: ['销量']
+            data: ['次数']
         },
         xAxis: {
-            data: name1
+            data: name1//name是JS的关键字，name1必须是数组
         },
         yAxis: {},
         series: [{
-            name: '销量',
+            name: '次数',
             type: 'bar',
             data: count
         }]

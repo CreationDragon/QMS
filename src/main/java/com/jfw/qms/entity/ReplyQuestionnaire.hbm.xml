@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.ReplyQuestionnaire" table="reply_questionnaire" schema="qms">
+        <id name="id">
+            <column name="id" sql-type="int(11)"/>
+        </id>
+        <property name="quesId">
+            <column name="ques_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="quesAnswer">
+            <column name="ques_answer" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="questionnaireId">
+            <column name="questionnaire_id" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="userId">
+            <column name="user_id" sql-type="int(11)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

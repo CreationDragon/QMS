@@ -2,11 +2,14 @@ package com.jfw.qms.service;
 
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
+import com.jfw.qms.entity.UserQuestionnaire;
 import com.jfw.qms.model.Area;
+import com.jfw.qms.model.CustomQuestionnaire;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IndexService {
     Area getArea(String id, String sign);
@@ -25,7 +28,16 @@ public interface IndexService {
 
     int putMessage(Message data, Integer userID);
 
-    List<Integer> getAllQues();
+    List<CustomQuestionnaire> getAllQues();
 
     List<Question> getQuesById(Integer quesID);
+
+    List<CustomQuestionnaire> getQuesFromById(Integer quesId);
+
+    Integer setAnswer(Integer userID, Map<Integer, String> answer, Integer questionnaireID);
+
+    List<CustomQuestionnaire> geHotQues();
+
+    List<UserQuestionnaire> getChartInfo();
+
 }

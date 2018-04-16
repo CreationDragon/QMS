@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加问卷</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/bootstrap-3.3.4.css">
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <style>
+
+        body {
+            /*background-color: #2D2D2D*/
+            background-color: #FFFFFF;
+        }
+
+        .container {
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+<div id="mydiv" style="height:500px;">
+    <!--在这里放置内容（上面的div是背景所需的DIV，不可更改）-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>新增问卷</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-hover" id="table">
+                    <thead>
+                    <tr data-tabullet-map="id">
+                        <th width="50" data-tabullet-map="_index" data-tabullet-readonly="true">No</th>
+                        <th data-tabullet-map="title">题目</th>
+                        <th data-tabullet-map="answerA">答案Ａ</th>
+                        <th data-tabullet-map="answerB">答案Ｂ</th>
+                        <th data-tabullet-map="answerC">答案Ｃ</th>
+                        <th data-tabullet-map="answerD">答案Ｄ</th>
+                        <th width="50" data-tabullet-type="edit"></th>
+                        <th width="50" data-tabullet-type="delete"></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="jQueryTabullet/js/Tabullet.js"></script>
+<script type="text/javascript" src="CanvasParticles/canvas-particle.js"></script>
+<script>
+    var questionnaireId = window.location.href.split("=")[1];
+    console.info("问卷的ID:    " + questionnaireId)
+
+
+    layui.use('form', function () {
+        var form = layui.form;
+
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            // console.info("表单内容: " + JSON.stringify(data.field))
+            //添加问卷
+            $.ajax({
+                type: "post",
+                method: "post",
+                url: "/admin/AddNews",
+                data: {News: JSON.stringify(data.field)},
+                async: false,
+                success: function (data) {
+                    layer.msg("添加成功");
+                },
+                error: function (data) {
+                    layer.msg("添加失败");
+                }
+            });
+
+            return false;
+        });
+
+    });
+
+
+    //    背景效果
+    window.onload = function () {
+        //配置
+        var config = {
+            vx: 4,	//小球x轴速度,正为右，负为左
+            vy: 4,	//小球y轴速度
+            height: 2,	//小球高宽，其实为正方形，所以不宜太大
+            width: 2,
+            count: 200,		//点个数
+            color: "121, 162, 185", 	//点颜色
+            stroke: "130,255,255", 		//线条颜色
+            dist: 6000, 	//点吸附距离
+            e_dist: 20000, 	//鼠标吸附加速距离
+            max_conn: 10 	//点到点最大连接数
+        }
+
+        //调用
+        CanvasParticle(config);
+    }
+
+    //生成问题
+    $(function () {
+        var source = [];
+
+        function resetTabullet() {
+            $("#table").tabullet({
+                data: source,
+                action: function (mode, data) {
+                    console.dir(mode);
+                    if (mode === 'save') {
+                        var ques = {
+                            "title": data.title,
+                            "answerA": data.answerA,
+                            "answerB": data.answerB,
+                            "answerC": data.answerC,
+                            "answerD": data.answerD,
+                        }
+                        //通过问卷ID插入问题
+                        $.ajax({
+                            type: "post",
+                            method: "post",
+                            url: "/admin/InsertQues",
+                            data: {"questionnaireId": questionnaireId, ques: JSON.stringify(ques)},
+                            async: false,
+                            success: function (data) {
+                                if (data.data != 0) {
+                                    layer.msg("添加成功");
+                                } else {
+                                    layer.msg("添加失败");
+                                }
+                            },
+                            error: function (data) {
+                                layer.msg("添加失败");
+                            }
+                        });
+                        source.push(data);
+                    }
+                    if (mode === 'edit') {
+                        for (var i = 0; i < source.length; i++) {
+                            if (source[i].id == data.id) {
+                                source[i] = data;
+                                console.info(title + "----" + answerA + "---" + answerB + "---" + answerC + "---" + answerD)
+                            }
+                        }
+                    }
+                    if (mode == 'delete') {
+                        for (var i = 0; i < source.length; i++) {
+                            if (source[i].id == data) {
+                                source.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                    resetTabullet();
+                }
+            });
+        }
+
+        resetTabullet();
+    });
+</script>
+
+</body>
+</html>

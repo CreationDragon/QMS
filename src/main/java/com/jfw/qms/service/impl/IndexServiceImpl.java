@@ -2,7 +2,9 @@ package com.jfw.qms.service.impl;
 
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
+import com.jfw.qms.entity.UserQuestionnaire;
 import com.jfw.qms.model.Area;
+import com.jfw.qms.model.CustomQuestionnaire;
 import com.jfw.qms.model.ThreeArea;
 import com.jfw.qms.model.User;
 import com.jfw.qms.repository.IndexRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class IndexServiceImpl implements IndexService {
@@ -21,6 +24,7 @@ public class IndexServiceImpl implements IndexService {
     private User user;
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
+    private List<CustomQuestionnaire> CQList = new ArrayList<>();
 
     @Override
     public Area getArea(String id, String sign) {
@@ -80,14 +84,38 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public List<Integer> getAllQues() {
-        List<Integer> quesIDs = indexRepository.getAllQues();
-        return quesIDs;
+    public List<CustomQuestionnaire> getAllQues() {
+        CQList = indexRepository.getAllQues();
+        return CQList;
     }
 
     @Override
     public List<Question> getQuesById(Integer quesID) {
         questionList = indexRepository.getQuesById(quesID);
         return questionList;
+    }
+
+    @Override
+    public List<CustomQuestionnaire> getQuesFromById(Integer quesId) {
+        CQList = indexRepository.getQuesFromById(quesId);
+        return CQList;
+    }
+
+    @Override
+    public Integer setAnswer(Integer userID, Map<Integer, String> map, Integer questionnaireID) {
+        Integer value = indexRepository.setAnswer(userID, map, questionnaireID);
+        return value;
+    }
+
+    @Override
+    public List<CustomQuestionnaire> geHotQues() {
+        CQList = indexRepository.getHotQues();
+        return CQList;
+    }
+
+    @Override
+    public List<UserQuestionnaire> getChartInfo() {
+        List<UserQuestionnaire> userQuestionnaires = indexRepository.getChartInfo();
+        return userQuestionnaires;
     }
 }

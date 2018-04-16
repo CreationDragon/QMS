@@ -28,7 +28,7 @@
             </li>
             <li class="layui-nav-item" id="questionnaire_search"><a>问卷搜索</a></li>
             <li class="layui-nav-item" id="message"><a>留言</a></li>
-            <li class="layui-nav-item"><a>统计分析</a></li>
+            <li class="layui-nav-item" id="statistics_analysis"><a>统计分析</a></li>
         </ul>
     </div>
 
@@ -192,6 +192,19 @@
         });
     })
 
+    //统计分析
+    $("#statistics_analysis").click(function () {
+        $.ajax({
+            url: "Analysis.html", //这里是静态页的地址
+            type: "GET", //静态页用get方法，否则服务器会抛出405错误
+            success: function (data) {
+                // var result = $(data).find("#nav_content");
+                $("#nav_content").html(data);
+
+            }
+        });
+    })
+
 
     layui.use('element', function () {
         var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
@@ -215,6 +228,18 @@
         });
     })
 
+    //    搜索结果溯源
+    $("#nav_content").on("click", ".title", function () {
+        var id = $(this).attr("id");
+        $.ajax({
+            url: "detailQuests.html", //这里是静态页的地址
+            type: "GET", //静态页用get方法，否则服务器会抛出405错误
+            success: function (data) {
+                // var result = $(data).find("#nav_content");
+                $("#nav_content").html(data);
+            }
+        });
+    })
 
 </script>
 </body>

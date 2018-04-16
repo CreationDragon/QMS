@@ -3,10 +3,8 @@ package com.jfw.qms.controller;
 import com.alibaba.fastjson.JSON;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
-import com.jfw.qms.model.Area;
-import com.jfw.qms.model.JsonResult;
-import com.jfw.qms.model.ThreeArea;
-import com.jfw.qms.model.User;
+import com.jfw.qms.entity.UserQuestionnaire;
+import com.jfw.qms.model.*;
 import com.jfw.qms.service.IndexService;
 import com.jfw.qms.utils.produceWordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class IndexController {
@@ -31,9 +31,11 @@ public class IndexController {
     private HttpSession session;
     private JsonResult result = new JsonResult();
     private User user = new User();
+    private String root = null;
+    private DownloadRepsoe dp = new DownloadRepsoe();
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
-    private String root = null;
+    private List<CustomQuestionnaire> CQList = new ArrayList<>();
 
     @RequestMapping(path = "/index")
     public JsonResult getIndex(HttpServletRequest request, Model model) {
@@ -203,7 +205,8 @@ public class IndexController {
 
 
     @PostMapping(path = "/upload/head")
-    public String upload(MultipartFile file, @RequestParam String userID) {
+    public DownloadRepsoe upload(MultipartFile file, @RequestParam String userID) {
+        dp = new DownloadRepsoe();
 
         if (null != file) {
             String myFileName = file.getOriginalFilename();// 文件原名称
@@ -223,7 +226,9 @@ public class IndexController {
             File localFile = new File(path);
             try {
                 file.transferTo(localFile);
-                return path;
+                dp.setCode(0);
+                dp.setMsg("");
+                dp.setData(null);
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -234,7 +239,7 @@ public class IndexController {
         } else {
             System.out.println("文件为空");
         }
-        return "success";
+        return dp;
 
     }
 
@@ -298,10 +303,10 @@ public class IndexController {
     public JsonResult getAllQues() {
         result = new JsonResult();
         List<Integer> quesIDs = new ArrayList<>();
-        quesIDs = indexService.getAllQues();
-        if (quesIDs.size() != 0) {
+        CQList = indexService.getAllQues();
+        if (CQList.size() != 0) {
             result.setResult("success");
-            result.setData(quesIDs);
+            result.setData(CQList);
         } else {
             result.setResult("fail");
             result.setData("");
@@ -333,6 +338,66 @@ public class IndexController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return result;
+    }
+
+    @PostMapping(path = "/getQuesFromById")
+    public JsonResult getQuesFromById(@RequestParam Integer quesId) {
+        result = new JsonResult();
+        CQList = indexService.getQuesFromById(quesId);
+        if (CQList.size() != 0) {
+            result.setResult("success");
+            result.setData(CQList);
+        } else {
+            result.setResult("fail");
+            result.setData("");
+        }
+        return result;
+
+    }
+
+    @PostMapping(path = "/uploadAnswer")
+    public JsonResult uploadAnswer(@RequestParam Integer userID, @RequestParam String answer, @RequestParam Integer questionnaireID) {
+        result = new JsonResult();
+        Map<Integer, String> map = JSON.parseObject(answer, HashMap.class);
+        Integer value = indexService.setAnswer(userID, map, questionnaireID);
+        if (value != 0) {
+            result.setResult("success");
+        } else {
+            result.setResult("fail");
+        }
+        result.setData(value);
+
+        return result;
+    }
+
+    @PostMapping(path = "/getHotQues")
+    public JsonResult getHotQues() {
+        result = new JsonResult();
+        List<Integer> quesIDs = new ArrayList<>();
+        CQList = indexService.geHotQues();
+        if (CQList.size() != 0) {
+            result.setResult("success");
+            result.setData(CQList);
+        } else {
+            result.setResult("fail");
+            result.setData("");
+        }
+        return result;
+    }
+
+    @PostMapping(path = "/getChartInfo")
+    public JsonResult getChartInfo() {
+        result = new JsonResult();
+        List<UserQuestionnaire> userQuestionnaires = indexService.getChartInfo();
+
+        if (userQuestionnaires.size() != 0) {
+            result.setResult("Success");
+        } else {
+            result.setResult("fail");
+        }
+        result.setData(userQuestionnaires);
 
         return result;
     }

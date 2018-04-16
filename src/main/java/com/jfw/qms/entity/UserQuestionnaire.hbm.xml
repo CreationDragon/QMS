@@ -4,14 +4,4 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="com.jfw.qms.entity.UserQuestionnaire" table="user_questionnaire" schema="qms">
-        <composite-id mapped="true" class="com.jfw.qms.entity.UserQuestionnairePK">
-            <key-property name="questionnaireId">
-                <column name="questionnaire_id" sql-type="int(11)"/>
-            </key-property>
-            <key-property name="userId">
-                <column name="user_id" sql-type="int(11)"/>
-            </key-property>
-        </composite-id>
-    </class>
 </hibernate-mapping>

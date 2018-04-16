@@ -15,6 +15,7 @@ public class Question {
     private String answerC;
     private String answerD;
     private Integer questionState;
+    private Integer count;
 
     @Id
     @Column(name = "question_id", nullable = false)
@@ -124,5 +125,14 @@ public class Question {
 
     public void setQuestionState(Integer questionState) {
         this.questionState = questionState;
+    }
+
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

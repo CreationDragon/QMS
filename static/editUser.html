@@ -129,9 +129,9 @@
             $("#phone").val(result.userPhone).attr('selected', true);
             $("#email").val(result.userEmail).attr('selected', true);
             $("#address_detail").val(result.userAddressDetail);
-            $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
-            $("#city").append("<option value='" + city + "'>" + city + "</option>").val(city);
-            $("#district").append("<option value='" + district + "'>" + district + "</option>").val(district);
+            // $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
+            // $("#city").append("<option value='" + city + "'>" + city + "</option>").val(city);
+            // $("#district").append("<option value='" + district + "'>" + district + "</option>").val(district);
             if (data.data.userGener == "男") {
                 $("input[value='男']").attr('checked', 'true');
             } else {
@@ -199,7 +199,11 @@
             var province = data.data.provinceList;
             $.each(province, function (id, name) {
                 if (name.provinceName != province) {
+                    select_province.empty()
                     select_province.append("<option value=" + name.provinceId + ">" + name.provinceName + "</option>;");
+                } else {
+                    select_province.append("<option value=" + name.provinceId + ">" + name.provinceName + "</option>;");
+                    select_province.attr("selected", "selected")
                 }
             })
         }

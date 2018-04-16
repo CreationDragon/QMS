@@ -8,6 +8,8 @@ import javax.persistence.*;
 public class UserQuestionnaire {
     private int questionnaireId;
     private int userId;
+    private String questionnaireName;
+    private Integer clickFrequency;
 
     @Id
     @Column(name = "questionnaire_id", nullable = false)
@@ -47,5 +49,25 @@ public class UserQuestionnaire {
         int result = questionnaireId;
         result = 31 * result + userId;
         return result;
+    }
+
+    @Basic
+    @Column(name = "questionnaire_name", nullable = true, length = 255)
+    public String getQuestionnaireName() {
+        return questionnaireName;
+    }
+
+    public void setQuestionnaireName(String questionnaireName) {
+        this.questionnaireName = questionnaireName;
+    }
+
+    @Basic
+    @Column(name = "click_frequency", nullable = true)
+    public Integer getClickFrequency() {
+        return clickFrequency;
+    }
+
+    public void setClickFrequency(Integer clickFrequency) {
+        this.clickFrequency = clickFrequency;
     }
 }

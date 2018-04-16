@@ -47,13 +47,11 @@ public class ManagerController {
     }
 
     @GetMapping(path = "/admin/getQuestionnaire")
-    public String getQuestionnaire() {
-
-
-        questions = managerService.getQuestionnaire();
+    public String getQuestionnaire(@RequestParam Integer page, @RequestParam Integer limit) {
+        questions = managerService.getQuestionnaire(page, limit);
         questionnaireInfo.setCode(0);
         questionnaireInfo.setMsg("");
-        questionnaireInfo.setCount(questions.size());
+        questionnaireInfo.setCount(managerService.getQuestionnaireSize());
         questionnaireInfo.setData(questions);
 
         String questinfo = JSON.toJSONString(questionnaireInfo);
@@ -190,5 +188,28 @@ public class ManagerController {
 
     }
 
+    @PostMapping(path = "/admin/QuestionnaireAdd")
+    public JsonResult QuestionnaireAdd(@RequestParam Integer userId, @RequestParam String title) {
+        result = new JsonResult();
+        Integer value = managerService.QuestionnaireAdd(userId, title);
+
+        result.setData(value);
+
+        return result;
+    }
+
+    @PostMapping(path = "/admin/InsertQues")
+    public JsonResult InsertQues(@RequestParam Integer questionnaireId, @RequestParam String ques) {
+        result = new JsonResult();
+        Question question = new Question();
+        question = JSON.parseObject(ques, Question.class);
+
+        Integer value = managerService.InsertQues(questionnaireId, question);
+
+        result.setData(value);
+
+        return result;
+
+    }
 
 }

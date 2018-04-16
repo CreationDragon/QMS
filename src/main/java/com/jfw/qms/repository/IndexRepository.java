@@ -1,6 +1,8 @@
 package com.jfw.qms.repository;
 
 import com.jfw.qms.entity.Message;
+import com.jfw.qms.entity.Question;
+import com.jfw.qms.entity.UserQuestionnaire;
 import com.jfw.qms.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -8,19 +10,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Repository
 public class IndexRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private String msg;
+    private User user;
+    private Question question = new Question();
     private List<AreaCity> areaCityList;
     private List<AreaProvince> areaProvinceList;
     private List<AreaDistrict> areaDistrictList;
-    private String msg;
-    private User user;
     private List<User> userList;
+    private List<CustomQuestionnaire> CQList = new ArrayList<>();
     private List<com.jfw.qms.entity.Question> questionList = new ArrayList<>();
 
     public Area getArea(Integer count, String sign) {
@@ -113,10 +119,9 @@ public class IndexRepository {
         return value;
     }
 
-    public List<Integer> getAllQues() {
-//        List<Integer> quesIDs = jdbcTemplate.query("SELECT questionnaire_id FROM user_questionnaire ", Integer.class);
-        List<Integer> quesIDs = jdbcTemplate.queryForList("SELECT questionnaire_id FROM user_questionnaire ", Integer.class);
-        return quesIDs;
+    public List<CustomQuestionnaire> getAllQues() {
+        CQList = jdbcTemplate.query("SELECT questionnaire_id,questionnaire_name,isEncrypt FROM user_questionnaire ", new BeanPropertyRowMapper<>(CustomQuestionnaire.class));
+        return CQList;
 
     }
 
@@ -127,11 +132,62 @@ public class IndexRepository {
 
         for (Integer id : quesID
                 ) {
-            com.jfw.qms.entity.Question question = new com.jfw.qms.entity.Question();
+            question = new Question();
             question = jdbcTemplate.queryForObject("SELECT * FROM question WHERE question_id=" + id, new BeanPropertyRowMapper<>(com.jfw.qms.entity.Question.class));
             questionList.add(question);
         }
 
         return questionList;
+    }
+
+    public List<CustomQuestionnaire> getQuesFromById(Integer quesId) {
+        CQList = new ArrayList<>();
+        List<Integer> quesIDList = jdbcTemplate.queryForList("SELECT questionnaire_id FROM questionnaire WHERE question_id = ? ", new Object[]{quesId}, Integer.class);
+        for (Integer questionnaireId : quesIDList
+                ) {
+            CustomQuestionnaire customQuestionnaire = new CustomQuestionnaire();
+
+            customQuestionnaire = jdbcTemplate.queryForObject("SELECT questionnaire_id,questionnaire_name FROM user_questionnaire WHERE questionnaire_id = ?", new Object[]{questionnaireId}, new BeanPropertyRowMapper<>(CustomQuestionnaire.class));
+
+            CQList.add(customQuestionnaire);
+        }
+        return CQList;
+    }
+
+    public Integer setAnswer(Integer userID, Map<Integer, String> map, Integer questionnaireID) {
+        Integer value = null;
+        Integer res = null;
+        System.out.println(userID + "----" + map);
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            res = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM reply_questionnaire WHERE ques_id = ? AND questionnaire_id = ?",
+                    new Object[]{entry.getKey(), questionnaireID}, Integer.class);
+            if (res != 0) {
+                value = jdbcTemplate.update("UPDATE reply_questionnaire SET ques_answer= ? WHERE ques_id = ? AND questionnaire_id = ? AND user_id=?",
+                        new Object[]{entry.getValue(), entry.getKey(), questionnaireID, userID});
+            } else {
+                value = jdbcTemplate.update("INSERT INTO reply_questionnaire(questionnaire_id, ques_id, ques_answer,user_id)VALUE (?,?,?,?)",
+                        new Object[]{questionnaireID, entry.getKey(), entry.getValue(), userID});
+            }
+
+        }
+
+        if (value != 0) {
+            value = jdbcTemplate.update("UPDATE user_questionnaire SET click_frequency = click_frequency+1 WHERE questionnaire_id =?",
+                    new Object[]{questionnaireID});
+        } else {
+            value = 0;
+        }
+
+        return value;
+    }
+
+    public List<CustomQuestionnaire> getHotQues() {
+        CQList = jdbcTemplate.query("SELECT questionnaire_id,questionnaire_name FROM user_questionnaire ORDER BY click_frequency DESC LIMIT 2 ", new BeanPropertyRowMapper<>(CustomQuestionnaire.class));
+        return CQList;
+    }
+
+    public List<UserQuestionnaire> getChartInfo() {
+        List<UserQuestionnaire> userQuestionnaires = jdbcTemplate.query("SELECT * FROM user_questionnaire ORDER BY click_frequency ASC", new BeanPropertyRowMapper<>(UserQuestionnaire.class));
+        return userQuestionnaires;
     }
 }

@@ -82,9 +82,9 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<com.jfw.qms.model.Question> getQuestionnaire() {
+    public List<com.jfw.qms.model.Question> getQuestionnaire(Integer page, Integer limit) {
         questionList = new ArrayList<>();
-        questions = managerRepository.getQuestionnaire();
+        questions = managerRepository.getQuestionnaire(page, limit);
         com.jfw.qms.model.Question question = new com.jfw.qms.model.Question();
 
         for (Question q : questions
@@ -158,6 +158,27 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return flag;
+    }
+
+    @Override
+    public Integer QuestionnaireAdd(Integer userId, String title) {
+        Integer value = managerRepository.QuestionnaireAdd(userId, title);
+        if (value != 0) {
+            value = managerRepository.QueryQuestionnaireId(userId);
+        }
+        return value;
+    }
+
+    @Override
+    public Integer InsertQues(Integer questionnaireId, Question question) {
+        Integer value = managerRepository.InsertQues(questionnaireId, question);
+        return value;
+    }
+
+    @Override
+    public int getQuestionnaireSize() {
+        int count = managerRepository.getQuestionnaireSize();
+        return count;
     }
 
 

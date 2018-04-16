@@ -18,7 +18,7 @@ public interface ManagerService {
 
     String editUser(User user, String userID);
 
-    List<com.jfw.qms.model.Question> getQuestionnaire();
+    List<com.jfw.qms.model.Question> getQuestionnaire(Integer page, Integer limit);
 
     Integer deleteQues(String quesID);
 
@@ -31,4 +31,11 @@ public interface ManagerService {
     List<Message> getMessageById(String adminID, String messageID);
 
     boolean replyUser(Integer messageID, String userEmail, String replyContent, String adminEmail, String userName);
+
+    Integer QuestionnaireAdd(Integer userId, String title);
+
+    Integer InsertQues(Integer questionnaireId, Question question);
+
+    int getQuestionnaireSize();
+
 }

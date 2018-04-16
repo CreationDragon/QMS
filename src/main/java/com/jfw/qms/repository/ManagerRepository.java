@@ -19,6 +19,7 @@ public class ManagerRepository {
     private List<User> users = new ArrayList<>();
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private Integer count = 0;
     private List<Question> questions = new ArrayList<>();
     private List<Message> messageList = new ArrayList<>();
 
@@ -117,10 +118,10 @@ public class ManagerRepository {
         return msg;
     }
 
-    public List<Question> getQuestionnaire() {
+    public List<Question> getQuestionnaire(Integer page, Integer limit) {
         questions = new ArrayList<>();
 
-        questions = jdbcTemplate.query("SELECT * FROM question WHERE  question_state = 0", new RowMapper<Question>() {
+        questions = jdbcTemplate.query("SELECT * FROM question WHERE  question_state = 0 LIMIT ?,?", new Object[]{(page - 1) * limit, limit}, new RowMapper<Question>() {
             @Override
             public Question mapRow(ResultSet resultSet, int i) throws SQLException {
                 Question question = new Question();
@@ -218,5 +219,36 @@ public class ManagerRepository {
                 new Object[]{1, s, messageID});
 
         return value;
+    }
+
+    public Integer QuestionnaireAdd(Integer userId, String title) {
+
+        Integer value = jdbcTemplate.update("INSERT INTO user_questionnaire(questionnaire_name, user_id)VALUE (?,?)", new Object[]{title, userId});
+
+        return value;
+    }
+
+    public Integer QueryQuestionnaireId(Integer userId) {
+
+        Integer questionnaireID = jdbcTemplate.queryForObject("SELECT questionnaire_id FROM user_questionnaire WHERE user_id = " + userId + " ORDER BY questionnaire_id DESC LIMIT 1", Integer.class);
+
+        return questionnaireID;
+    }
+
+    public Integer InsertQues(Integer questionnaireId, Question question) {
+        Integer value = jdbcTemplate.update("INSERT INTO qms.question(title,answer_A,answer_B,answer_C,answer_D)VALUE (?,?,?,?,?)",
+                new Object[]{question.getTitle(), question.getAnswerA(), question.getAnswerB(), question.getAnswerC(), question.getAnswerD()});
+        if (value != 0) {
+            value = jdbcTemplate.queryForObject("SELECT question_id FROM qms.question ORDER BY question_id DESC LIMIT 1", Integer.class);
+            value = jdbcTemplate.update("INSERT INTO qms.questionnaire(question_id,questionnaire_id)VALUE (?,?)", new Object[]{value, questionnaireId});
+        }
+
+
+        return value;
+    }
+
+    public int getQuestionnaireSize() {
+        count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM question WHERE  question_state = 0", Integer.class);
+        return count;
     }
 }

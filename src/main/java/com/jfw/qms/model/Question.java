@@ -7,6 +7,7 @@ import javax.persistence.Id;
 @Entity
 public class Question {
     private int questionId;
+    private Integer count;
 
     @Id
     @javax.persistence.Column(name = "question_id", nullable = false)
@@ -100,6 +101,15 @@ public class Question {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     @Override
