@@ -39,17 +39,17 @@
     <div class="layui-form-item">
         <label class="layui-form-label">住址</label>
         <div class="layui-input-inline">
-            <select name="province" id="province" lay-filter="province">
+            <select name="province" id="province" lay-filter="province" autocomplete="off">
                 <option value="" selected="" class="province">请选择省</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="city" id="city" lay-filter="city">
+            <select name="city" id="city" lay-filter="city" autocomplete="off">
                 <option value="" selected="" class="city">请选择市</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="district" id="district">
+            <select name="district" id="district" autocomplete="off">
                 <option value="" selected="" class="district">请选择县/区</option>
             </select>
         </div>
@@ -196,14 +196,16 @@
         data: {"id": "", "sign": "province"},
         async: false,//是否异步请求
         success: function (data) {   //如何发送成功
-            var province = data.data.provinceList;
+            var provinceList = data.data.provinceList;
             $.each(province, function (id, name) {
-                if (name.provinceName != province) {
-                    select_province.empty()
-                    select_province.append("<option value=" + name.provinceId + ">" + name.provinceName + "</option>;");
+                if (province != provinceList[id].provinceName) {
+
+                    console.info("privateName:  " + name.provinceName)
+                    console.info("id.provincce: " + provinceList[id].provinceName)
+
+                    select_province.append("<option class='" + name.provinceId + "' value=" + name.provinceId + ">" + name.provinceName + "</option>;");
                 } else {
-                    select_province.append("<option value=" + name.provinceId + ">" + name.provinceName + "</option>;");
-                    select_province.attr("selected", "selected")
+                    select_province.append("<option selected='selected' value=" + name.provinceId + ">" + name.provinceName + "</option>;");
                 }
             })
         }
@@ -230,7 +232,12 @@
                 success: function (citys) {   //如何发送成功
                     var city = citys.data.cityList;
                     $.each(city, function (id, name) {
-                        select_city.append("<option value=" + name.cityId + ">" + name.cityName + "</option>;");
+                        if (city != city[id].cityId) {
+
+                            select_city.append("<option class='" + name.cityId + "' value=" + name.cityId + ">" + name.cityName + "</option>;");
+                        } else {
+                            select_city.append("<option selected='selected' value=" + name.cityId + ">" + name.cityName + "</option>;");
+                        }
                         form.render('select');
                     })
                 }
@@ -256,7 +263,12 @@
                 success: function (districts) {   //如何发送成功
                     var district = districts.data.districtList;
                     $.each(district, function (id, name) {
-                        select_district.append("<option value=" + name.districtId + ">" + name.districtName + "</option>;");
+                        if (city != city[id].cityId) {
+
+                            select_district.append("<option class='" + name.districtId + "' value=" + name.districtId + ">" + name.districtName + "</option>;");
+                        } else {
+                            select_city.append("<option selected='selected' value=" + name.districtId + ">" + name.districtName + "</option>;");
+                        }
                         form.render('select');
                     })
                 }
