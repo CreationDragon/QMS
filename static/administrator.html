@@ -72,15 +72,10 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
     // 默认加载的用户管理界面
-    $.ajax({
-        url: "usermanager.html", //这里是静态页的地址
-        type: "GET", //静态页用get方法，否则服务器会抛出405错误
-        success: function (data) {
-            // var result = $(data).find("#nav_content");
-            $("#nav_content").html(data);
+    $(function () {
+        $("#user_manage").trigger('click')
+    })
 
-        }
-    });
 
     //时间的委托，使用ajax加载html界面时，使用委托才能调用html中的组件。
     //编辑

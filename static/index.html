@@ -73,6 +73,29 @@
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
     var userID;
+
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/index",
+        async: false,
+        success: function (data) {
+
+            console.info(data);
+            user_data = data;
+            if ((data.data.userName || data.data.userPsw) == null) {
+                $("#MyInfo").hide();
+            } else {
+                $("#to_register").hide();
+                $("#to_login").hide();
+                $("#horizon").hide();
+                $("#MyName").text(data.data.userName);
+                $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+            }
+            console.info(data.data.userName);
+        }
+    });
+
     // 默认加载热门问卷
     $.ajax({
         url: "HotQuestionnaire.html", //这里是静态页的地址
