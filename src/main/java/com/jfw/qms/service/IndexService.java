@@ -40,4 +40,7 @@ public interface IndexService {
 
     List<UserQuestionnaire> getChartInfo();
 
+    void updateUserHead(String myFileName, Integer integer);
+
+    String getPassword(Integer questionnaireId);
 }

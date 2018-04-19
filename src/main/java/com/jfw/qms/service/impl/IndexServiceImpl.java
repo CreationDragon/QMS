@@ -118,4 +118,15 @@ public class IndexServiceImpl implements IndexService {
         List<UserQuestionnaire> userQuestionnaires = indexRepository.getChartInfo();
         return userQuestionnaires;
     }
+
+    @Override
+    public void updateUserHead(String myFileName, Integer userId) {
+        indexRepository.updateUserHead(myFileName, userId);
+    }
+
+    @Override
+    public String getPassword(Integer questionnaireId) {
+        String password = indexRepository.getPassword(questionnaireId);
+        return password;
+    }
 }

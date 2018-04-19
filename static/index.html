@@ -90,7 +90,11 @@
                 $("#to_login").hide();
                 $("#horizon").hide();
                 $("#MyName").text(data.data.userName);
-                $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                if (data.data.userHead == 'null') {
+                    $("#My_Head").attr("src", "http://localhost:8181/headpic/default.jpg");
+                } else {
+                    $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                }
             }
             console.info(data.data.userName);
         }
@@ -125,7 +129,11 @@
                 $("#to_login").hide();
                 $("#horizon").hide();
                 $("#MyName").text(data.data.userName);
-                $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                if (data.data.userHead == 'null') {
+                    $("#My_Head").attr("src", "http://localhost:8181/headpic/default.jpg");
+                } else {
+                    $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                }
             }
             console.info(data.data.userName);
         }

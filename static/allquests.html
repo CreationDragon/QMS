@@ -55,7 +55,22 @@
             $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
         } else {
             layer.prompt({title: '请输入密码', formType: 1}, function (pass, index) {
-                if (pass != "*****") {
+                var password = null;
+                //获取密码
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getPassword",
+                    data: {"questionnaireId": questionnaire_id},
+                    async: false,
+                    success: function (data) {
+                        password = data.data;
+                    },
+                    error: function (data) {
+
+                    }
+                });
+                if (pass != password) {
                     layer.msg("密码不匹配")
                 } else {
                     layer.close(index);

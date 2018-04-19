@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 import com.jfw.qms.entity.Question;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -25,6 +26,8 @@ public class produceWordUtil {
                 ) {
             //create Paragraph
             XWPFParagraph paragraph = document.createParagraph();
+            //设置文字对齐方式
+            paragraph.setAlignment(ParagraphAlignment.LEFT);
             XWPFRun run = paragraph.createRun();
 //            设置题目
             XWPFRun title = paragraph.createRun();

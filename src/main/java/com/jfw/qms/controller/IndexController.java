@@ -133,7 +133,7 @@ public class IndexController {
         user = new User();
         user = indexService.login(userName, userPsw);
 
-        if (user.getUserAuthority() == 1) {
+        if (1 == user.getUserAuthority()) {
             //将数据存储在Session中
             session.setAttribute("user_name", user.getUserName());
             session.setAttribute("user_psw", user.getUserPsw());
@@ -206,10 +206,11 @@ public class IndexController {
 
     @PostMapping(path = "/upload/head")
     public DownloadRepsoe upload(MultipartFile file, @RequestParam String userID) {
+        String myFileName = null;
         dp = new DownloadRepsoe();
 
         if (null != file) {
-            String myFileName = file.getOriginalFilename();// 文件原名称
+            myFileName = file.getOriginalFilename();// 文件原名称
             try {
                 root = String.valueOf(ResourceUtils.getURL("application.properties"));
                 System.out.println(root);
@@ -239,6 +240,7 @@ public class IndexController {
         } else {
             System.out.println("文件为空");
         }
+        indexService.updateUserHead(myFileName, Integer.valueOf(userID));
         return dp;
 
     }
@@ -278,9 +280,11 @@ public class IndexController {
         if (count > 0) {
             result.setResult("success");
             result.setData("留言成功");
-        } else {
+        } else if (count == 0) {
             result.setResult("faile");
             result.setData("留言失败");
+        } else {
+            result.setData("已经留言过相同的问题，无需重复留言");
         }
         return result;
 
@@ -398,6 +402,16 @@ public class IndexController {
             result.setResult("fail");
         }
         result.setData(userQuestionnaires);
+
+        return result;
+    }
+
+    @PostMapping(path = "/getPassword")
+    public JsonResult getPassword(@RequestParam Integer questionnaireId) {
+        result = new JsonResult();
+        String password = indexService.getPassword(questionnaireId);
+
+        result.setData(password);
 
         return result;
     }

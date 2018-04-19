@@ -112,10 +112,16 @@ public class IndexRepository {
     }
 
     public int putMessage(Message data, Integer userID) {
-        int value = jdbcTemplate.update("INSERT INTO message(message_content, admin_id,user_id) VALUES(?,?,?) ",
-                new Object[]{
-                        data.getMessageContent(), data.getAdminId(), userID
-                });
+        int value = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM message WHERE user_id=? AND message_content=? AND admin_id=?",
+                new Object[]{userID, data.getMessageContent(), data.getAdminId()}, Integer.class);
+        if (value == 0) {
+            value = jdbcTemplate.update("INSERT INTO message(message_content, admin_id,user_id) VALUES(?,?,?) ",
+                    new Object[]{
+                            data.getMessageContent(), data.getAdminId(), userID
+                    });
+        } else {
+            value = -1;
+        }
         return value;
     }
 
@@ -182,12 +188,21 @@ public class IndexRepository {
     }
 
     public List<CustomQuestionnaire> getHotQues() {
-        CQList = jdbcTemplate.query("SELECT questionnaire_id,questionnaire_name FROM user_questionnaire ORDER BY click_frequency DESC LIMIT 2 ", new BeanPropertyRowMapper<>(CustomQuestionnaire.class));
+        CQList = jdbcTemplate.query("SELECT questionnaire_id,questionnaire_name,isEncrypt FROM user_questionnaire ORDER BY click_frequency DESC LIMIT 2 ", new BeanPropertyRowMapper<>(CustomQuestionnaire.class));
         return CQList;
     }
 
     public List<UserQuestionnaire> getChartInfo() {
         List<UserQuestionnaire> userQuestionnaires = jdbcTemplate.query("SELECT * FROM user_questionnaire ORDER BY click_frequency ASC", new BeanPropertyRowMapper<>(UserQuestionnaire.class));
         return userQuestionnaires;
+    }
+
+    public void updateUserHead(String myFileName, Integer userId) {
+        jdbcTemplate.update("UPDATE qms.user SET user_head=? WHERE user_id=?", new Object[]{myFileName, userId});
+    }
+
+    public String getPassword(Integer questionnaireId) {
+        String password = jdbcTemplate.queryForObject("SELECT  password FROM user_questionnaire WHERE questionnaire_id=" + questionnaireId, String.class);
+        return password;
     }
 }

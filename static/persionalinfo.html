@@ -17,7 +17,7 @@
         <label class="layui-form-label">账号名</label>
         <div class="layui-input-inline">
             <input type="text" name="userName" autocomplete="off" placeholder="请输入用户名"
-                   id="username" class="layui-input layui-disabled" disabled
+                   id="username" class="layui-input " readonly
             >
         </div>
     </div>
@@ -30,17 +30,17 @@
     <div class="layui-form-item">
         <label class="layui-form-label">住址</label>
         <div class="layui-input-inline">
-            <select name="province" id="province" lay-filter="province" disabled="disabled">
+            <select name="province" id="province" lay-filter="province" readonly>
                 <option value="" selected="" class="province">请选择省</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="city" id="city" lay-filter="city" disabled="disabled">
+            <select name="city" id="city" lay-filter="city" readonly>
                 <option value="" selected="" class="city">请选择市</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="district" id="district" disabled="disabled">
+            <select name="district" id="district" readonly>
                 <option value="" selected="" class="district">请选择县/区</option>
             </select>
         </div>
@@ -49,8 +49,8 @@
     <div class="layui-form-item" pane="">
         <label class="layui-form-label">性别</label>
         <div class="layui-input-block">
-            <input name="userGener" value="男" title="男" checked="" type="radio" class="layui-disabled" disabled>
-            <input name="userGener" value="女" title="女" type="radio" class="layui-disabled" disabled>
+            <input name="userGener" value="男" title="男" checked="" type="radio" class="disabled" disabled>
+            <input name="userGener" value="女" title="女" type="radio" class="disabled" disabled>
         </div>
     </div>
 
@@ -59,15 +59,14 @@
             <label class="layui-form-label">联系方式</label>
             <div class="layui-input-inline">
                 <input name="userPhone" id="phone" autocomplete="off"
-                       class="layui-input layui-disabled" disabled
+                       class="layui-input " readonly
                        type="tel">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">常用邮箱</label>
             <div class="layui-input-inline">
-                <input name="userEmail" autocomplete="off" class="layui-input layui-disabled"
-                       disabled type="text"
+                <input name="userEmail" autocomplete="off" class="layui-input" readonly type="text"
                        id="email">
             </div>
         </div>
@@ -76,7 +75,7 @@
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">详细地址</label>
         <div class="layui-input-block">
-            <textarea name="userAddressDetail" placeholder="请输入详细地址" class="layui-textarea layui-disabled" disabled
+            <textarea name="userAddressDetail" placeholder="请输入详细地址" class="layui-textarea " readonly
                       id="address_detail"></textarea>
         </div>
     </div>

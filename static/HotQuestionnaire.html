@@ -39,7 +39,7 @@
                 console.info(data.data[0])
                 if (data.result == "success") {
                     $.each(data.data, function (i) {
-                        $("#ques_content").append("<a href='detailedQuestion.html?quesID=" + data.data[i].questionnaire_id + "'style='margin-top: 20px;width: 200px' >" + data.data[i].questionnaire_name + "</a><br>");
+                        $("#ques_content").append("<a style='margin-top: 20px;width: 200px'  onclick='judge(" + data.data[i].isEncrypt + "," + data.data[i].questionnaire_id + ")'>" + data.data[i].questionnaire_name + "</a><br>");
                     })
                 } else {
                     layer.msg("未发现相关的问卷信息");
@@ -48,6 +48,38 @@
         });
 
     })
+
+
+    function judge(isEncrypt, questionnaire_id) {
+        if (isEncrypt != 1) {
+            $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
+        } else {
+            layer.prompt({title: '请输入密码', formType: 1}, function (pass, index) {
+                var password = null;
+                //获取密码
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getPassword",
+                    data: {"questionnaireId": questionnaire_id},
+                    async: false,
+                    success: function (data) {
+                        password = data.data;
+                    },
+                    error: function (data) {
+
+                    }
+                });
+                if (pass != password) {
+                    layer.msg("密码不匹配")
+                } else {
+                    layer.close(index);
+                    $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
+                }
+
+            });
+        }
+    }
 
 </script>
 

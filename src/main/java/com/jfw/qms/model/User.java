@@ -25,6 +25,8 @@ public class User {
     private String district;
     private String option;
 
+    private String userHead;
+
     public String getOption() {
         return option;
     }
@@ -159,6 +161,14 @@ public class User {
 
     public void setDistrict(String district) {
         this.district = district;
+    }
+
+    public String getUserHead() {
+        return userHead;
+    }
+
+    public void setUserHead(String userHead) {
+        this.userHead = userHead;
     }
 
     @Override
