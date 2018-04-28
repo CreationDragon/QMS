@@ -177,7 +177,18 @@
                 $("#to_login").hide();
                 $("#horizon").hide();
                 $("#MyName").text(data.data.userName);
-                $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                //获取头像参数
+                $.ajax({
+                    type: "get",
+                    url: "http://localhost:8181/headpic/" + data.data.userId + ".jpg",
+                    success: function () {
+                        $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
+                    },
+                    error: function () {
+                        $("#My_Head").attr("src", "http://localhost:8181/headpic/default.jpg");
+                    }
+                })
+
             }
         }
     });
