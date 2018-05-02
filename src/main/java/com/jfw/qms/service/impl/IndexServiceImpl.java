@@ -129,4 +129,10 @@ public class IndexServiceImpl implements IndexService {
         String password = indexRepository.getPassword(questionnaireId);
         return password;
     }
+
+    @Override
+    public Integer getRegistersId() {
+        Integer userId = indexRepository.getRegistersId();
+        return userId;
+    }
 }

@@ -205,4 +205,9 @@ public class IndexRepository {
         String password = jdbcTemplate.queryForObject("SELECT  password FROM user_questionnaire WHERE questionnaire_id=" + questionnaireId, String.class);
         return password;
     }
+
+    public Integer getRegistersId() {
+        Integer userId = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM qms.user", Integer.class);
+        return userId;
+    }
 }

@@ -43,4 +43,7 @@ public interface IndexService {
     void updateUserHead(String myFileName, Integer integer);
 
     String getPassword(Integer questionnaireId);
+
+    Integer getRegistersId();
+
 }

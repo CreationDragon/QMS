@@ -90,7 +90,7 @@
                 $("#to_login").hide();
                 $("#horizon").hide();
                 $("#MyName").text(data.data.userName);
-                if (data.data.userHead == 'null') {
+                if (data.data.userHead === null) {
                     $("#My_Head").attr("src", "http://localhost:8181/headpic/default.jpg");
                 } else {
                     $("#My_Head").attr("src", "http://localhost:8181/headpic/" + data.data.userId + ".jpg");
