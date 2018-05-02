@@ -46,9 +46,9 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public User getUserInfo() {
+    public User getUserInfo(Integer userID) {
 
-        user = indexRepository.getUserInfo();
+        user = indexRepository.getUserInfo(userID);
         return user;
     }
 

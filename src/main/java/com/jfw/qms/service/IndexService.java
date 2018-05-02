@@ -16,7 +16,7 @@ public interface IndexService {
 
     String registerNumber(com.jfw.qms.model.User user);
 
-    User getUserInfo();
+    User getUserInfo(Integer userID);
 
     User login(String userName, String userPsw);
 

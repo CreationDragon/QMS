@@ -168,7 +168,7 @@
             if (user_data.data.userName == null || user_data.data.userPsw == null) {
                 layer.msg("请先登录,只有登陆之后才能查看个人信息");
             } else {
-                window.location.href = encodeURI("persionalinfo.html?userID=" + user_data.data.userID);
+                window.location.href = encodeURI("persionalinfo.html?userID=" + user_data.data.userId);
             }
         });
 

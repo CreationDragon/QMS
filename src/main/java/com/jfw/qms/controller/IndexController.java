@@ -121,8 +121,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getInfo")
-    public JsonResult getUserInfo() {
-        user = indexService.getUserInfo();
+    public JsonResult getUserInfo(@RequestParam Integer userID) {
+        user = indexService.getUserInfo(userID);
 
         result.setResult("success");
         result.setData(user);

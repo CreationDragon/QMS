@@ -73,7 +73,13 @@ public class IndexRepository {
         return msg;
     }
 
-    public User getUserInfo() {
+    public User getUserInfo(Integer userID) {
+        user = new User();
+        try {
+            user = jdbcTemplate.queryForObject("SELECT * FROM USER WHERE user_id=?", new Object[]{userID}, new BeanPropertyRowMapper<>(User.class));
+        } catch (Exception e) {
+            return user;
+        }
         return user;
     }
 
