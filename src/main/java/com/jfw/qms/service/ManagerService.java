@@ -8,7 +8,7 @@ import com.jfw.qms.model.User;
 import java.util.List;
 
 public interface ManagerService {
-    List<com.jfw.qms.model.User> getUser();
+    List<com.jfw.qms.model.User> getUser(Integer page, Integer limit);
 
     Integer deleteUser(String userID);
 
@@ -38,4 +38,5 @@ public interface ManagerService {
 
     int getQuestionnaireSize();
 
+    int getCount();
 }

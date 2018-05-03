@@ -25,8 +25,8 @@ public class ManagerServiceImpl implements ManagerService {
     private ManagerRepository managerRepository;
 
     @Override
-    public List<com.jfw.qms.model.User> getUser() {
-        users = managerRepository.getUser();
+    public List<com.jfw.qms.model.User> getUser(Integer page, Integer limit) {
+        users = managerRepository.getUser(page,limit);
         userList = new ArrayList<>();
 
         for (User u : users
@@ -178,6 +178,12 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public int getQuestionnaireSize() {
         int count = managerRepository.getQuestionnaireSize();
+        return count;
+    }
+
+    @Override
+    public int getCount() {
+        Integer count = managerRepository.getCount();
         return count;
     }
 

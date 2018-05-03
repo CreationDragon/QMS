@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>编辑用户信息</title>
+    <title>修改个人信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -39,18 +39,18 @@
     <div class="layui-form-item">
         <label class="layui-form-label">住址</label>
         <div class="layui-input-inline">
-            <select name="province" id="province" lay-filter="province" autocomplete="off">
-                <option value="" selected="" class="province">请选择省</option>
+            <select name="province" id="province" lay-filter="province">
+                <option value="" class="province">请选择省</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="city" id="city" lay-filter="city" autocomplete="off">
-                <option value="" selected="" class="city">请选择市</option>
+            <select name="city" id="city" lay-filter="city">
+                <option value="" class="city">请选择市</option>
             </select>
         </div>
         <div class="layui-input-inline">
-            <select name="district" id="district" autocomplete="off">
-                <option value="" selected="" class="district">请选择县/区</option>
+            <select name="district" id="district">
+                <option value="" class="district">请选择县/区</option>
             </select>
         </div>
     </div>
@@ -111,6 +111,8 @@
     var userID = data[1];
     console.info("data是:    " + data)
     console.info("UserID是:  " + userID);
+    //获取项目的根目录
+    getContextPath()
 
     //通过userID获取信息
     $.ajax({
@@ -122,10 +124,14 @@
         async: false,
         success: function (data) {
             result = data.data;
-            console.info("用户编辑中返回的参数:   " + result)
+            provinceId = result.userProvince;
+            cityId = result.userCity;
+            districtId = result.userDistrict;
+            console.info("用户编辑中返回的参数:   " + provinceId + "----" + cityId + "-----" + districtId)
 
             getArea(result);
 
+            console.info("用户编辑中返回的参数:   " + province + "----" + city + "-----" + district)
 
             console.info(result);
             $("#username").val(result.userName);
@@ -133,7 +139,7 @@
             $("#phone").val(result.userPhone).attr('selected', true);
             $("#email").val(result.userEmail).attr('selected', true);
             $("#address_detail").val(result.userAddressDetail);
-            // $("#province").append("<option value='" + province + "'>" + province + "</option>").val(province);
+            // $("#province").append("<option value='" + provinceId + "'>" + province + "</option>").val(province);
             $("#city").append("<option selected='selected' value='" + cityId + "'>" + city + "</option>");
             $("#district").append("<option selected='selected' value='" + districtId + "'>" + district + "</option>");
             if (data.data.userGener == "男") {
@@ -277,6 +283,7 @@
             form.render();
         })
 
+
         //自定义验证规则
         form.verify({
             title: function (value) {
@@ -327,6 +334,7 @@
         var uploadInst = upload.render({
             elem: '#head_pic' //绑定元素
             , url: '/upload/head' //上传接口
+            , data: {"userID": userID}
             , done: function (res) {
                 //上传完毕回调
             }
@@ -336,14 +344,13 @@
         });
     });
 
-
-    //    返回首页
-    $(function () {
-        $("#back_to_index").click(function () {
-            window.location.href = "index.html";
-        })
-    });
-
+    //   获取项目的根目录
+    function getContextPath() {
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0, index + 1);
+        return result;
+    }
 
 </script>
 

@@ -23,8 +23,8 @@ public class ManagerRepository {
     private List<Question> questions = new ArrayList<>();
     private List<Message> messageList = new ArrayList<>();
 
-    public List<User> getUser() {
-        users = jdbcTemplate.query("SELECT * FROM USER WHERE user_state=0", new RowMapper<User>() {
+    public List<User> getUser(Integer page, Integer limit) {
+        users = jdbcTemplate.query("SELECT * FROM USER WHERE user_state=0 LIMIT ?,?", new Object[]{(page - 1) * limit, limit}, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet resultSet, int i) throws SQLException {
                 User user = new User();
@@ -249,6 +249,11 @@ public class ManagerRepository {
 
     public int getQuestionnaireSize() {
         count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM question WHERE  question_state = 0", Integer.class);
+        return count;
+    }
+
+    public Integer getCount() {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM qms.user", Integer.class);
         return count;
     }
 }
