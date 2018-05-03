@@ -198,7 +198,18 @@
             if (user_data.data.userName == null || user_data.data.userPsw == null) {
                 layer.msg("请先登录,只有登陆之后才能查看个人信息");
             } else {
-                window.location.href = encodeURI("persionalinfo.html?userName=" + user_data.data.userName + "&userPsw=" + user_data.data.userPsw + "&userAuthority" + user_data.data.userAuthority);
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getUserId",
+                    async: false,
+                    success: function (data) {
+                        window.location.href = encodeURI("persionalinfo.html?userID=" + data);
+                    },
+                    error: function (data) {
+
+                    }
+                });
             }
         });
 
