@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分析问卷</title>
+</head>
+<body>
+<div id="charts_content" style="margin-left: 30%">
+</div>
+
+
+<script src="js/jquery-3.3.1.js"></script>
+<script src="js/echarts.js"></script>
+<script>
+    <!--问卷Id-->
+    var surveyID = window.location.href.split("=")[1];
+    $.ajax({
+        type: "post",
+        method: "post",
+        url: "/getQuesBySurveyId",
+        data: {"surveyID": surveyID},
+        async: false,
+        success: function (data) {
+            var res = data.data;
+            $.each(res, function (i) {
+                $("#charts_content").append("<div id='" + res[i].questionId + "' style=\"width: 600px;height:400px;\"></div>");
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById(res[i].questionId));
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getQuesAnswerById",
+                    data: {"quesId": res[i].questionId},
+                    async: false,
+                    success: function (data) {
+                        // 指定图表的配置项和数据
+                        var option = {
+                            title: {
+                                text: '本题提交情况'
+                            },
+                            tooltip: {},
+                            legend: {
+                                data: ['次数']
+                            },
+                            xAxis: {
+                                data: ["选项A", "选项B", "选项C", "选项D"]
+                            },
+                            yAxis: {},
+                            series: [{
+                                name: '次数',
+                                type: 'bar',
+                                data: [data.data.a, data.data.b, data.data.c, data.data.d]
+                            }]
+                        };
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+
+                    },
+                    error: function (data) {
+
+                    }
+                });
+
+            })
+
+        },
+        error: function (data) {
+
+        }
+    });
+</script>
+
+</body>
+</html>

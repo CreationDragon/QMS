@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.jfw.qms.entity.AnswerCount" table="answer_count" schema="qms">
+        <composite-id mapped="true" class="com.jfw.qms.entity.AnswerCountPK">
+            <key-property name="id">
+                <column name="id" sql-type="int(11)"/>
+            </key-property>
+            <key-property name="quesId">
+                <column name="ques_id" sql-type="int(11)"/>
+            </key-property>
+        </composite-id>
+        <property name="a">
+            <column name="A" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="b">
+            <column name="B" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="c">
+            <column name="C" sql-type="int(11)" not-null="true"/>
+        </property>
+        <property name="d">
+            <column name="D" sql-type="int(11)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

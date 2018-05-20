@@ -1,5 +1,6 @@
 package com.jfw.qms.repository;
 
+import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
@@ -26,6 +27,7 @@ public class IndexRepository {
     private List<AreaProvince> areaProvinceList;
     private List<AreaDistrict> areaDistrictList;
     private List<User> userList;
+    private AnswerCount answerCount = new AnswerCount();
     private List<CustomQuestionnaire> CQList = new ArrayList<>();
     private List<com.jfw.qms.entity.Question> questionList = new ArrayList<>();
 
@@ -181,6 +183,17 @@ public class IndexRepository {
                         new Object[]{questionnaireID, entry.getKey(), entry.getValue(), userID});
             }
 
+            Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM answer_count WHERE ques_id=?", new Object[]{entry.getKey()}, Integer.class);
+
+            String var = entry.getValue();
+            if (count != 0) {
+                String sql = "UPDATE answer_count SET " + var + "=" + var + "+1 WHERE ques_id=" + entry.getKey();
+                jdbcTemplate.update(sql);
+            } else {
+                String sql = "INSERT INTO answer_count(ques_id," + var + ")VALUE(" + entry.getKey() + ",1);";
+                jdbcTemplate.update(sql);
+            }
+
         }
 
         if (value != 0) {
@@ -215,5 +228,17 @@ public class IndexRepository {
     public Integer getRegistersId() {
         Integer userId = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM qms.user", Integer.class);
         return userId;
+    }
+
+    public List<Question> getQuests(Integer surveyID) {
+        questionList = new ArrayList<>();
+        questionList = jdbcTemplate.query("SELECT * FROM questionnaire WHERE questionnaire_id=" + surveyID, new BeanPropertyRowMapper<>(Question.class));
+        return questionList;
+    }
+
+    public AnswerCount getQuesAnswerById(Integer quesId) {
+        answerCount = new AnswerCount();
+        answerCount = jdbcTemplate.queryForObject("SELECT * FROM answer_count WHERE ques_id=" + quesId, new BeanPropertyRowMapper<>(AnswerCount.class));
+        return answerCount;
     }
 }

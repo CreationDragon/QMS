@@ -1,5 +1,6 @@
 package com.jfw.qms.service;
 
+import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
@@ -46,4 +47,7 @@ public interface IndexService {
 
     Integer getRegistersId();
 
+    List<Question> getQuests(Integer surveyID);
+
+    AnswerCount getQuesAnswerById(Integer quesId);
 }

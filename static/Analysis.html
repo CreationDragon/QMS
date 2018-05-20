@@ -1,69 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>ECharts</title>
-    <!-- 引入 echarts.js -->
-    <script src="js/echarts.js"></script>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="css/allquests.css">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="layer/layer.js"></script>
 </head>
 <body>
-<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="main" style="width: 600px;height:400px;"></div>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <div id="ques_content"></div>
+    </div>
+</form>
+
+
 <script src="js/jquery-3.3.1.js"></script>
-<script type="text/javascript">
+<script src="layer/layer.js"></script>
+<script src="layui/layui.js" charset="utf-8"></script>
+<script>
+    $(function () {
+        $.ajax({
+            type: "post",
+            method: "post",
+            url: "/getAllQues",
+            async: false,
+            success: function (data) {
+                // $("#ques_content").empty();
+                console.info(data.data[0])
+                if (data.result == "success") {
+                    $.each(data.data, function (i) {
+                        // $("#ques_content").append("<a href='detailedQuestion.html?quesID=" + data.data[i].questionnaire_id + "'style='margin-top: 20px;width: 200px' >" + data.data[i].questionnaire_name + "</a><br>");
+                        $("#ques_content").append("<a style='margin-top: 20px;width: 200px'  onclick='judge(" + data.data[i].isEncrypt + "," + data.data[i].questionnaire_id + ")'>" + data.data[i].questionnaire_name + "</a><br>");
+                    })
+                } else {
+                    layer.msg("未发现相关的问卷信息");
+                }
+            }
+        });
 
-    var res = null;
-    var name1 = new Array();
-    var count = new Array();
-    // 获取图标所需的数据
-    $.ajax({
-        type: "post",
-        method: "post",
-        url: "getChartInfo",
-        async: false,
-        success: function (data) {
-            res = data.data;
 
-            $.each(res, function (i) {
-                name1[i] = res[i].questionnaireName;
-                count[i] = res[i].clickFrequency;
-            })
+    })
 
-            console.info(name1)
-            console.info(count)
+    function judge(isEncrypt, questionnaire_id) {
+        if (isEncrypt != 1) {
+            $("a").attr("href", "analysisQuestion.html?quesID=" + questionnaire_id)
+        } else {
+            layer.prompt({title: '请输入密码', formType: 1}, function (pass, index) {
+                var password = null;
+                //获取密码
+                $.ajax({
+                    type: "post",
+                    method: "post",
+                    url: "/getPassword",
+                    data: {"questionnaireId": questionnaire_id},
+                    async: false,
+                    success: function (data) {
+                        password = data.data;
+                    },
+                    error: function (data) {
 
-        },
-        error: function (data) {
+                    }
+                });
+                if (pass != password) {
+                    layer.msg("密码不匹配")
+                } else {
+                    layer.close(index);
+                    $("a").attr("href", "detailedQuestion.html?quesID=" + questionnaire_id)
+                }
 
+            });
         }
-    });
+    }
 
-
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
-
-    // 指定图表的配置项和数据
-    var option = {
-        title: {
-            text: '问卷答复数'
-        },
-        tooltip: {},
-        legend: {
-            data: ['次数']
-        },
-        xAxis: {
-            data: name1//name是JS的关键字，name1必须是数组
-        },
-        yAxis: {},
-        series: [{
-            name: '次数',
-            type: 'bar',
-            data: count
-        }]
-    };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
 </script>
+
 </body>
 </html>

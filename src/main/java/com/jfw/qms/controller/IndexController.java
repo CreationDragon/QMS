@@ -1,11 +1,13 @@
 package com.jfw.qms.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
 import com.jfw.qms.model.*;
 import com.jfw.qms.service.IndexService;
+import com.jfw.qms.utils.Logarithm;
 import com.jfw.qms.utils.produceWordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +32,19 @@ public class IndexController {
     private IndexService indexService;
     private String msg;
     private HttpSession session;
-    private JsonResult result = new JsonResult();
+    private JsonResult<Object> result = new JsonResult<>();
     private User user = new User();
     private String root = null;
+    private AnswerCount answerCount = new AnswerCount();
     private DownloadRepsoe dp = new DownloadRepsoe();
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
     private List<CustomQuestionnaire> CQList = new ArrayList<>();
+    private Map<String, Double> entropyMap = new HashMap<>();
+
 
     @RequestMapping(path = "/index")
-    public JsonResult getIndex(HttpServletRequest request, Model model) {
+    public JsonResult<Object> getIndex(HttpServletRequest request, Model model) {
 
         String userName = (String) request.getSession().getAttribute("userName");
         String userPsw = (String) request.getSession().getAttribute("userPsw");
@@ -58,7 +64,7 @@ public class IndexController {
     }
 
     @RequestMapping(path = "/admin/index")
-    public JsonResult getAdminIndex(HttpServletRequest request, Model model) {
+    public JsonResult<Object> getAdminIndex(HttpServletRequest request, Model model) {
 
         String userName = (String) request.getSession().getAttribute("user_name");
         String userPsw = (String) request.getSession().getAttribute("user_psw");
@@ -76,7 +82,7 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getAreaById")
-    public JsonResult getUserInfoById(@RequestParam String provinceID, @RequestParam String cityID, @RequestParam String districtID) {
+    public JsonResult<Object> getUserInfoById(@RequestParam String provinceID, @RequestParam String cityID, @RequestParam String districtID) {
         ThreeArea threeArea = new ThreeArea();
         threeArea = indexService.getAreaById(provinceID, cityID, districtID);
 
@@ -87,16 +93,16 @@ public class IndexController {
     }
 
     @GetMapping(path = "/area")
-    public JsonResult getArea(@RequestParam String id, @RequestParam String sign) {
+    public JsonResult<Area> getArea(@RequestParam String id, @RequestParam String sign) {
         Area area = indexService.getArea(id, sign);
-        JsonResult result = new JsonResult();
+        JsonResult<Area> result = new JsonResult<Area>();
         result.setResult("success");
         result.setData(area);
         return result;
     }
 
     @PostMapping(path = "/register")
-    public JsonResult registerNumber(@RequestParam String register_data, HttpServletRequest request, HttpServletResponse response) {
+    public JsonResult<String> registerNumber(@RequestParam String register_data, HttpServletRequest request, HttpServletResponse response) {
         com.jfw.qms.model.User user = JSON.parseObject(register_data, com.jfw.qms.model.User.class);
         System.out.println(user);
 
@@ -104,7 +110,7 @@ public class IndexController {
         msg = indexService.registerNumber(user);
         Integer userId = indexService.getRegistersId();
 
-        JsonResult result = new JsonResult();
+        JsonResult<String> result = new JsonResult<>();
         if (msg.equals("注册成功")) {
             result.setResult("success");
             //获取Session
@@ -121,7 +127,7 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getInfo")
-    public JsonResult getUserInfo(@RequestParam Integer userID) {
+    public JsonResult<Object> getUserInfo(@RequestParam Integer userID) {
         user = indexService.getUserInfo(userID);
 
         result.setResult("success");
@@ -130,7 +136,7 @@ public class IndexController {
     }
 
     @PostMapping(path = "/login")
-    public JsonResult Login(HttpServletRequest request, @RequestParam String userName, @RequestParam String userPsw) {
+    public JsonResult<Object> Login(HttpServletRequest request, @RequestParam String userName, @RequestParam String userPsw) {
 
         session = request.getSession();
         user = new User();
@@ -162,15 +168,15 @@ public class IndexController {
     }
 
     @PostMapping(path = "/modifyUserInfo")
-    public JsonResult modifyUserInfo(@RequestParam String userID) {
-        result = new JsonResult();
+    public JsonResult<Object> modifyUserInfo(@RequestParam String userID) {
+        result = new JsonResult<>();
 
         return result;
     }
 
 
     @PostMapping(path = "/loginout")
-    public JsonResult loginout(HttpServletRequest request, HttpServletResponse response) {
+    public JsonResult<Object> loginout(HttpServletRequest request, HttpServletResponse response) {
         session = request.getSession(false);
         if (session == null) {
             result.setResult("faile");
@@ -189,7 +195,7 @@ public class IndexController {
 
 
     @PostMapping(path = "/admin/loginout")
-    public JsonResult adminLoginout(HttpServletRequest request, HttpServletResponse response) {
+    public JsonResult<Object> adminLoginout(HttpServletRequest request, HttpServletResponse response) {
         session = request.getSession(false);
         if (session == null) {
             result.setResult("faile");
@@ -249,8 +255,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/quesSearch")
-    public JsonResult quesSearch(@RequestParam String keyword) {
-        result = new JsonResult();
+    public JsonResult<Object> quesSearch(@RequestParam String keyword) {
+        result = new JsonResult<>();
         questionList = indexService.quesSearch(keyword);
         if (questionList.size() != 0) {
             result.setResult("success");
@@ -263,8 +269,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getAdminInfo")
-    public JsonResult getAdminInfo() {
-        result = new JsonResult();
+    public JsonResult<Object> getAdminInfo() {
+        result = new JsonResult<>();
         userList = indexService.getAdminInfo();
         result.setResult("success");
         result.setData(userList);
@@ -273,9 +279,9 @@ public class IndexController {
     }
 
     @PostMapping(path = "/putMessage")
-    public JsonResult putMessage(@RequestParam String data, @RequestParam Integer userID) {
+    public JsonResult<Object> putMessage(@RequestParam String data, @RequestParam Integer userID) {
         Message message = JSON.parseObject(data, Message.class);
-        result = new JsonResult();
+        result = new JsonResult<>();
 
         int count = indexService.putMessage(message, userID);
 
@@ -307,8 +313,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getAllQues")
-    public JsonResult getAllQues() {
-        result = new JsonResult();
+    public JsonResult<Object> getAllQues() {
+        result = new JsonResult<>();
         List<Integer> quesIDs = new ArrayList<>();
         CQList = indexService.getAllQues();
         if (CQList.size() != 0) {
@@ -322,8 +328,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getQuesById")
-    public JsonResult getQuesById(@RequestParam Integer quesID) {
-        result = new JsonResult();
+    public JsonResult<Object> getQuesById(@RequestParam Integer quesID) {
+        result = new JsonResult<>();
         questionList = indexService.getQuesById(quesID);
         if (questionList.size() != 0) {
             result.setResult("success");
@@ -336,8 +342,8 @@ public class IndexController {
     }
 
     @RequestMapping(path = "/downloadDoc")
-    public JsonResult downloadDoc(@RequestParam Integer quesID, HttpServletRequest request, HttpServletResponse response) {
-        result = new JsonResult();
+    public JsonResult<Object> downloadDoc(@RequestParam Integer quesID, HttpServletRequest request, HttpServletResponse response) {
+        result = new JsonResult<>();
         questionList = indexService.getQuesById(quesID);
         try {
             root = String.valueOf(ResourceUtils.getURL("application.properties"));
@@ -350,8 +356,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getQuesFromById")
-    public JsonResult getQuesFromById(@RequestParam Integer quesId) {
-        result = new JsonResult();
+    public JsonResult<Object> getQuesFromById(@RequestParam Integer quesId) {
+        result = new JsonResult<>();
         CQList = indexService.getQuesFromById(quesId);
         if (CQList.size() != 0) {
             result.setResult("success");
@@ -365,9 +371,11 @@ public class IndexController {
     }
 
     @PostMapping(path = "/uploadAnswer")
-    public JsonResult uploadAnswer(@RequestParam Integer userID, @RequestParam String answer, @RequestParam Integer questionnaireID) {
-        result = new JsonResult();
+    public JsonResult<Object> uploadAnswer(@RequestParam Integer userID, @RequestParam String answer, @RequestParam Integer questionnaireID) {
+        result = new JsonResult<>();
         Map<Integer, String> map = JSON.parseObject(answer, HashMap.class);
+//        （届时，应该判断questionnaireId是否等于固定值）分析是或存在老年病
+        isExistenceDisease(map);
         Integer value = indexService.setAnswer(userID, map, questionnaireID);
         if (value != 0) {
             result.setResult("success");
@@ -379,9 +387,81 @@ public class IndexController {
         return result;
     }
 
+    //    判断是否存在疾病
+    private void isExistenceDisease(Map<Integer, String> map) {
+        System.out.println("分析中:    " + map);
+/**
+ * 先确定患病和不患病的概率（假设2/5和3/5）
+ * 确定年龄对疾病的比例我们这里只能假设（青年=0，中年=2/5,老年=3/5）患病的概率（0,2/5,3/5）
+ * 同理饮食（清淡=1/5,一般=2/5，重口=2/5），患病的概率（2/15,6/15,7/15）
+ * 锻炼(偶尔=1/3，一般=1/3，经常=1/3),患病的概率（2/15,6/15,7/15）
+ * 睡眠（较差=2/5，一般=2/5，良好=1/5）,患病的概率（6/15,2/15,7/15）
+ * 胃口（较差=2/5，一般=2/5，良好=1/5）,患病的概率（6/15,2/15,7/15）
+ *
+ *
+ *
+ */
+        /**1、计算患病和不患病的熵值**/
+        double entropy = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+
+        /**年龄、饮食、锻炼、睡眠、胃口的熵值**/
+//
+//        年龄后验熵
+        double age1 = -0.0 * Logarithm.log(new BigDecimal(Double.toString(0.0)), 2);
+        double age2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double age3 = -3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2) - 2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2);
+//        年龄条件熵
+        double ageEntropy = 0 * age1 + 2 / 5 * age2 + 3 / 5 * age3;
+        entropyMap.put("age", ageEntropy);
+//        饮食后验熵
+        double food1 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(4.0 / 5)), 2);
+        double food2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double food3 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+//        饮食条件熵
+        double foodEntropy = 2.0 / 15 * food1 + 6.0 / 15 * food2 + 7.0 / 15 * food3;
+        entropyMap.put("food", foodEntropy);
+
+//        锻炼后验熵
+        double exercise1 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 3)), 2);
+        double exercise2 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2);
+        double exercise3 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+//        锻炼条件熵
+        double exerciseEntropy = 2.0 / 15 * exercise1 + 6.0 / 15 * exercise2 + 7.0 / 15 * exercise3;
+        entropyMap.put("exercise", exerciseEntropy);
+
+//        睡眠后验熵
+        double sleep1 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double sleep2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double sleep3 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(4.0 / 5)), 2);
+//        睡眠条件熵
+        double sleepEntropy = 6.0 / 15 * sleep1 + 2.0 / 15 * sleep2 + 7.0 / 15 * sleep3;
+        entropyMap.put("sleep", sleepEntropy);
+
+
+//        胃口后验熵
+        double appetite1 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double appetite2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        double appetite3 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2);
+//        胃口条件熵
+        double appetiteEntropy = 6.0 / 15 * appetite1 + 2.0 / 15 * appetite2 + 7.0 / 15 * appetite3;
+        entropyMap.put("appetite", appetiteEntropy);
+
+        double temp = 0.0;
+        String obj = null;
+
+        for (Map.Entry<String, Double> entry : entropyMap.entrySet()) {
+            temp = (temp < entry.getValue() ? entry.getValue() : temp);
+            if (temp == entry.getValue()) {
+            }
+            obj = entry.getKey();
+        }
+        System.out.println("最大的条件熵是:    " + obj);
+
+    }
+
     @PostMapping(path = "/getHotQues")
-    public JsonResult getHotQues() {
-        result = new JsonResult();
+    public JsonResult<Object> getHotQues() {
+        result = new JsonResult<>();
         List<Integer> quesIDs = new ArrayList<>();
         CQList = indexService.geHotQues();
         if (CQList.size() != 0) {
@@ -395,8 +475,8 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getChartInfo")
-    public JsonResult getChartInfo() {
-        result = new JsonResult();
+    public JsonResult<Object> getChartInfo() {
+        result = new JsonResult<>();
         List<UserQuestionnaire> userQuestionnaires = indexService.getChartInfo();
 
         if (userQuestionnaires.size() != 0) {
@@ -410,12 +490,33 @@ public class IndexController {
     }
 
     @PostMapping(path = "/getPassword")
-    public JsonResult getPassword(@RequestParam Integer questionnaireId) {
-        result = new JsonResult();
+    public JsonResult<Object> getPassword(@RequestParam Integer questionnaireId) {
+        result = new JsonResult<>();
         String password = indexService.getPassword(questionnaireId);
 
         result.setData(password);
 
         return result;
     }
+
+    @PostMapping(path = "/getQuesBySurveyId")
+    public JsonResult<Object> getQuests(@RequestParam Integer surveyID) {
+        result = new JsonResult<>();
+        questionList = indexService.getQuests(surveyID);
+
+        result.setData(questionList);
+
+        return result;
+    }
+
+    @PostMapping(path = "/getQuesAnswerById")
+    public JsonResult<Object> getQuesAnswerById(@RequestParam Integer quesId) {
+        result = new JsonResult<>();
+        answerCount = indexService.getQuesAnswerById(quesId);
+
+        result.setData(answerCount);
+        return result;
+    }
+
+
 }

@@ -6,7 +6,7 @@
   <session-factory>
     <property name="connection.url">jdbc:mysql://localhost:3306/QMS</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-      <!--<mapping resource="com/jfw/qms/entity/AreaCity.hbm.xml"/>-->
+    <!--<mapping resource="com/jfw/qms/entity/AreaCity.hbm.xml"/>-->
     <mapping class="com.jfw.qms.entity.AreaCity"/>
     <!--<mapping resource="com/jfw/qms/entity/AreaDistrict.hbm.xml"/>-->
     <mapping class="com.jfw.qms.entity.AreaDistrict"/>
@@ -31,6 +31,8 @@
       <mapping resource="com/jfw/qms/entity/Message.hbm.xml"/>
       <mapping class="com.jfw.qms.entity.ReplyQuestionnaire"/>
       <mapping resource="com/jfw/qms/entity/ReplyQuestionnaire.hbm.xml"/>
+      <mapping class="com.jfw.qms.entity.AnswerCount"/>
+      <mapping resource="com/jfw/qms/entity/AnswerCount.hbm.xml"/>
 
       <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->

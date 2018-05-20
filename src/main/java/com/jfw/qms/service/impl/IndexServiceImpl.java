@@ -1,5 +1,6 @@
 package com.jfw.qms.service.impl;
 
+import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
@@ -22,6 +23,7 @@ public class IndexServiceImpl implements IndexService {
     private IndexRepository indexRepository;
     private String msg;
     private User user;
+    private AnswerCount answerCount = new AnswerCount();
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
     private List<CustomQuestionnaire> CQList = new ArrayList<>();
@@ -134,5 +136,18 @@ public class IndexServiceImpl implements IndexService {
     public Integer getRegistersId() {
         Integer userId = indexRepository.getRegistersId();
         return userId;
+    }
+
+    @Override
+    public List<Question> getQuests(Integer surveyID) {
+        questionList = indexRepository.getQuests(surveyID);
+        return questionList;
+    }
+
+    @Override
+    public AnswerCount getQuesAnswerById(Integer quesId) {
+        answerCount = new AnswerCount();
+        answerCount = indexRepository.getQuesAnswerById(quesId);
+        return answerCount;
     }
 }
