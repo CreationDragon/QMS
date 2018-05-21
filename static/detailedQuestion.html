@@ -130,11 +130,11 @@
                             },
                             async: false,
                             success: function (data) {
-                                if (data.data != 0) {
-                                    layer.msg("填写完毕，稍后自动跳转到首页");
-                                    setTimeout(function () {
-                                        window.location.href = "index.html"
-                                    }, 1500)
+                                if (data.result === "success") {
+                                    layer.msg("填写完毕，健康状况:   " + data.data);
+                                    // setTimeout(function () {
+                                    //     window.location.href = "index.html"
+                                    // }, 1500)
                                 } else {
                                     layer.msg("提交出现问题，请稍后再试");
                                 }

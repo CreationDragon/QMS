@@ -1,6 +1,7 @@
 package com.jfw.qms.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.jfw.qms.common.TreeNode;
 import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
@@ -8,6 +9,7 @@ import com.jfw.qms.entity.UserQuestionnaire;
 import com.jfw.qms.model.*;
 import com.jfw.qms.service.IndexService;
 import com.jfw.qms.utils.Logarithm;
+import com.jfw.qms.test.Test;
 import com.jfw.qms.utils.produceWordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -375,87 +377,38 @@ public class IndexController {
         result = new JsonResult<>();
         Map<Integer, String> map = JSON.parseObject(answer, HashMap.class);
 //        （届时，应该判断questionnaireId是否等于固定值）分析是或存在老年病
-        isExistenceDisease(map);
+        String msg = isExistenceDisease(map);
         Integer value = indexService.setAnswer(userID, map, questionnaireID);
         if (value != 0) {
             result.setResult("success");
         } else {
             result.setResult("fail");
         }
-        result.setData(value);
+        result.setData(msg);
 
         return result;
     }
 
     //    判断是否存在疾病
-    private void isExistenceDisease(Map<Integer, String> map) {
+    private String isExistenceDisease(Map<Integer, String> map) {
         System.out.println("分析中:    " + map);
-/**
- * 先确定患病和不患病的概率（假设2/5和3/5）
- * 确定年龄对疾病的比例我们这里只能假设（青年=0，中年=2/5,老年=3/5）患病的概率（0,2/5,3/5）
- * 同理饮食（清淡=1/5,一般=2/5，重口=2/5），患病的概率（2/15,6/15,7/15）
- * 锻炼(偶尔=1/3，一般=1/3，经常=1/3),患病的概率（2/15,6/15,7/15）
- * 睡眠（较差=2/5，一般=2/5，良好=1/5）,患病的概率（6/15,2/15,7/15）
- * 胃口（较差=2/5，一般=2/5，良好=1/5）,患病的概率（6/15,2/15,7/15）
- *
- *
- *
- */
-        /**1、计算患病和不患病的熵值**/
-        double entropy = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
+        TreeNode treeNode = new TreeNode();
 
-        /**年龄、饮食、锻炼、睡眠、胃口的熵值**/
-//
-//        年龄后验熵
-        double age1 = -0.0 * Logarithm.log(new BigDecimal(Double.toString(0.0)), 2);
-        double age2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double age3 = -3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2) - 2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2);
-//        年龄条件熵
-        double ageEntropy = 0 * age1 + 2 / 5 * age2 + 3 / 5 * age3;
-        entropyMap.put("age", ageEntropy);
-//        饮食后验熵
-        double food1 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(4.0 / 5)), 2);
-        double food2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double food3 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-//        饮食条件熵
-        double foodEntropy = 2.0 / 15 * food1 + 6.0 / 15 * food2 + 7.0 / 15 * food3;
-        entropyMap.put("food", foodEntropy);
+        List<String> values = new ArrayList<>();
 
-//        锻炼后验熵
-        double exercise1 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 3)), 2);
-        double exercise2 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2);
-        double exercise3 = -1.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 3)), 2) - 2.0 / 3 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-//        锻炼条件熵
-        double exerciseEntropy = 2.0 / 15 * exercise1 + 6.0 / 15 * exercise2 + 7.0 / 15 * exercise3;
-        entropyMap.put("exercise", exerciseEntropy);
-
-//        睡眠后验熵
-        double sleep1 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double sleep2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double sleep3 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(4.0 / 5)), 2);
-//        睡眠条件熵
-        double sleepEntropy = 6.0 / 15 * sleep1 + 2.0 / 15 * sleep2 + 7.0 / 15 * sleep3;
-        entropyMap.put("sleep", sleepEntropy);
-
-
-//        胃口后验熵
-        double appetite1 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double appetite2 = -2.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(2.0 / 5)), 2) - 3.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(3.0 / 5)), 2);
-        double appetite3 = -1.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2) - 4.0 / 5 * Logarithm.log(new BigDecimal(Double.toString(1.0 / 5)), 2);
-//        胃口条件熵
-        double appetiteEntropy = 6.0 / 15 * appetite1 + 2.0 / 15 * appetite2 + 7.0 / 15 * appetite3;
-        entropyMap.put("appetite", appetiteEntropy);
-
-        double temp = 0.0;
-        String obj = null;
-
-        for (Map.Entry<String, Double> entry : entropyMap.entrySet()) {
-            temp = (temp < entry.getValue() ? entry.getValue() : temp);
-            if (temp == entry.getValue()) {
-            }
-            obj = entry.getKey();
+        for (Map.Entry<Integer, String> entry : map.entrySet()
+                ) {
+            values.add(entry.getValue());
         }
-        System.out.println("最大的条件熵是:    " + obj);
+
+        treeNode.setAnswers(values);
+
+        Test test = new Test();
+        String msg = test.statrtMain(treeNode);
+
+        System.out.println("在Controller中的msg:   " + msg);
+
+        return msg;
 
     }
 
