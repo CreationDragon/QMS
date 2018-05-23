@@ -1,9 +1,9 @@
 package com.jfw.qms.data;
 
 public enum EmSleep {
-	GOOD(1,"����"),
-	ORDINARY(1,"һ��"),
-	BAD(3,"�ϲ�");
+	GOOD(1,"较差"),
+	ORDINARY(1,"一般"),
+	BAD(3,"良好");
 	
 	private final Integer level;
     private final String desc;

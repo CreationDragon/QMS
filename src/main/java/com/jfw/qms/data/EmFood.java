@@ -1,7 +1,7 @@
 package com.jfw.qms.data;
 
 public enum EmFood {
-	LIGHT(1, "�嵭"), ORDINARY(1, "һ��"), HEAVY(3, "�ؿ�ζ");
+	LIGHT(1, "清淡"), ORDINARY(1, "一般"), HEAVY(3, "重口味");
 
 	private final Integer level;
 	private final String desc;

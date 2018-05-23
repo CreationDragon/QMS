@@ -2,9 +2,9 @@ package com.jfw.qms.data;
 
 public enum EmExercise {
 	
-	OCCASIONAL(3,"ż��"),
-	ORDINARY(2,"һ��"),
-	OFTEN(1,"����");
+	OCCASIONAL(3,"偶尔"),
+	ORDINARY(2,"一般"),
+	OFTEN(1,"经常");
 	
 	private final Integer level;
     private final String desc;
