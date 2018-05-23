@@ -22,6 +22,7 @@ public class IndexRepository {
     private JdbcTemplate jdbcTemplate;
     private String msg;
     private User user;
+    private Ensemble ensemble;
     private Question question = new Question();
     private List<AreaCity> areaCityList;
     private List<AreaProvince> areaProvinceList;
@@ -236,9 +237,15 @@ public class IndexRepository {
         return questionList;
     }
 
-    public AnswerCount getQuesAnswerById(Integer quesId) {
+    public Ensemble getQuesAnswerById(Integer quesId) {
         answerCount = new AnswerCount();
         answerCount = jdbcTemplate.queryForObject("SELECT * FROM answer_count WHERE ques_id=" + quesId, new BeanPropertyRowMapper<>(AnswerCount.class));
-        return answerCount;
+        question = jdbcTemplate.queryForObject("SELECT * FROM question WHERE question_id=" + quesId, new BeanPropertyRowMapper<>(Question.class));
+
+        Ensemble ensemble = new Ensemble();
+        ensemble.setAnswerCount(answerCount);
+        ensemble.setQuestion(question);
+
+        return ensemble;
     }
 }

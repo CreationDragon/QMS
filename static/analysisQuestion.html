@@ -33,23 +33,26 @@
                     data: {"quesId": res[i].questionId},
                     async: false,
                     success: function (data) {
+                        var title = data.data.question.title;
                         // 指定图表的配置项和数据
                         var option = {
                             title: {
-                                text: '本题提交情况'
+                                text: title
                             },
                             tooltip: {},
                             legend: {
                                 data: ['次数']
                             },
                             xAxis: {
-                                data: ["选项A", "选项B", "选项C", "选项D"]
+                                data: [data.data.question.answerA, data.data.question.answerB,
+                                    data.data.question.answerC, data.data.question.answerD]
                             },
                             yAxis: {},
                             series: [{
                                 name: '次数',
                                 type: 'bar',
-                                data: [data.data.a, data.data.b, data.data.c, data.data.d]
+                                data: [data.data.answerCount.a, data.data.answerCount.b,
+                                    data.data.answerCount.c, data.data.answerCount.d]
                             }]
                         };
 

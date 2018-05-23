@@ -10,6 +10,8 @@ public class UserQuestionnaire {
     private int userId;
     private String questionnaireName;
     private Integer clickFrequency;
+    private Integer isEncrypt;
+    private String password;
 
     @Id
     @Column(name = "questionnaire_id", nullable = false)
@@ -69,5 +71,25 @@ public class UserQuestionnaire {
 
     public void setClickFrequency(Integer clickFrequency) {
         this.clickFrequency = clickFrequency;
+    }
+
+    @Basic
+    @Column(name = "isEncrypt")
+    public Integer getIsEncrypt() {
+        return isEncrypt;
+    }
+
+    public void setIsEncrypt(Integer isEncrypt) {
+        this.isEncrypt = isEncrypt;
+    }
+
+    @Basic
+    @Column(name = "password")
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

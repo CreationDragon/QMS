@@ -11,6 +11,7 @@ public class Questionnaire {
     private Integer questionnaireId;
     private Integer questionId;
     private String questionAnswer;
+    private Integer clickFrequency;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -76,5 +77,15 @@ public class Questionnaire {
         result = 31 * result + (questionId != null ? questionId.hashCode() : 0);
         result = 31 * result + (questionAnswer != null ? questionAnswer.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "click_frequency")
+    public Integer getClickFrequency() {
+        return clickFrequency;
+    }
+
+    public void setClickFrequency(Integer clickFrequency) {
+        this.clickFrequency = clickFrequency;
     }
 }

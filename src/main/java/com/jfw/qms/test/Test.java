@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Test {
-    public String statrtMain(TreeNode treeNode) {
+    public void statrtMain(TreeNode treeNode) {
         List<BaseRecord> records = new ArrayList<BaseRecord>();
         HumanAttrRecord record0 = new HumanAttrRecord(EmAgeLevel.YOUTH, EmExercise.OFTEN, EmFood.LIGHT, EmSleep.GOOD, false);
         HumanAttrRecord record1 = new HumanAttrRecord(EmAgeLevel.YOUTH, EmExercise.OFTEN, EmFood.LIGHT, EmSleep.GOOD, false);
@@ -69,9 +69,9 @@ public class Test {
         DecisionTree decisionTree = new DecisionTree(selector);
         TreeNode root = decisionTree.createTree(records, fieldSet, treeNode);
         String msg = null;
+        List<String> strings = new ArrayList<>();
         if (null != root) {
-            msg = root.print(0);
+            root.print(0);
         }
-        return msg;
     }
 }

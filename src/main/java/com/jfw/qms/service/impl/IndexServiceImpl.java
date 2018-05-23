@@ -4,10 +4,7 @@ import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
-import com.jfw.qms.model.Area;
-import com.jfw.qms.model.CustomQuestionnaire;
-import com.jfw.qms.model.ThreeArea;
-import com.jfw.qms.model.User;
+import com.jfw.qms.model.*;
 import com.jfw.qms.repository.IndexRepository;
 import com.jfw.qms.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,9 +142,9 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public AnswerCount getQuesAnswerById(Integer quesId) {
-        answerCount = new AnswerCount();
-        answerCount = indexRepository.getQuesAnswerById(quesId);
-        return answerCount;
+    public Ensemble getQuesAnswerById(Integer quesId) {
+        Ensemble ensemble = new Ensemble();
+        ensemble = indexRepository.getQuesAnswerById(quesId);
+        return ensemble;
     }
 }

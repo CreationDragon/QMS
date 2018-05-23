@@ -1,13 +1,9 @@
 package com.jfw.qms.service;
 
-import com.jfw.qms.entity.AnswerCount;
 import com.jfw.qms.entity.Message;
 import com.jfw.qms.entity.Question;
 import com.jfw.qms.entity.UserQuestionnaire;
-import com.jfw.qms.model.Area;
-import com.jfw.qms.model.CustomQuestionnaire;
-import com.jfw.qms.model.ThreeArea;
-import com.jfw.qms.model.User;
+import com.jfw.qms.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -49,5 +45,5 @@ public interface IndexService {
 
     List<Question> getQuests(Integer surveyID);
 
-    AnswerCount getQuesAnswerById(Integer quesId);
+    Ensemble getQuesAnswerById(Integer quesId);
 }

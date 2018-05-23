@@ -20,8 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class IndexController {
     private JsonResult<Object> result = new JsonResult<>();
     private User user = new User();
     private String root = null;
-    private AnswerCount answerCount = new AnswerCount();
+    private Ensemble ensemble = new Ensemble();
     private DownloadRepsoe dp = new DownloadRepsoe();
     private List<Question> questionList = new ArrayList<>();
     private List<User> userList = new ArrayList<>();
@@ -377,14 +376,18 @@ public class IndexController {
         result = new JsonResult<>();
         Map<Integer, String> map = JSON.parseObject(answer, HashMap.class);
 //        （届时，应该判断questionnaireId是否等于固定值）分析是或存在老年病
-        String msg = isExistenceDisease(map);
+        String msg = null;
         Integer value = indexService.setAnswer(userID, map, questionnaireID);
         if (value != 0) {
             result.setResult("success");
         } else {
             result.setResult("fail");
         }
-        result.setData(msg);
+        if (questionnaireID == 6) {
+            msg = isExistenceDisease(map);
+            result.setData(msg);
+        }
+        result.setData("非分析问卷，无法分析");
 
         return result;
     }
@@ -403,12 +406,87 @@ public class IndexController {
 
         treeNode.setAnswers(values);
 
-        Test test = new Test();
-        String msg = test.statrtMain(treeNode);
 
-        System.out.println("在Controller中的msg:   " + msg);
+        try {
+            root = String.valueOf(ResourceUtils.getURL("application.properties"));
+            System.out.println(root);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String pathname = root.split("file:/")[1].split("application.properties")[0] + "/static/word.txt";
+
+        String encoding = "UTF-8";
+        File file = new File(pathname);
+
+        file.delete();
+
+        Test test = new Test();
+        test.statrtMain(treeNode);
+
+        String content = getWord();
+
+        String[] words = content.split(",");
+        List<String> strings = new ArrayList<>();
+        for (String s : words
+                ) {
+            if (!s.equals("true") && !s.equals("false") && !s.equals("")) {
+                strings.add(s);
+            }
+        }
+
+        if ("sleep".equals(strings.get(0))) {
+            if (values.get(3).equals("C")) {
+                msg = "你没有患老年病的征兆";
+            } else if (values.get(3).equals("A")) {
+                msg = "你有很大的可能性患有老年病";
+            } else {
+                if (values.get(0).equals("A")) {
+                    msg = "你有很大的可能性患有老年病";
+                } else {
+                    msg = "你没有患老年病的征兆";
+                }
+            }
+        }
+
+        System.out.println("在Controller中的content:   " + content);
 
         return msg;
+
+    }
+
+    //    读取文件获取树的节点
+    private String getWord() {
+        try {
+            root = String.valueOf(ResourceUtils.getURL("application.properties"));
+            System.out.println(root);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String pathname = root.split("file:/")[1].split("application.properties")[0] + "/static/word.txt";
+
+        String encoding = "UTF-8";
+        File file = new File(pathname);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new String(filecontent, encoding);
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("The OS does not support " + encoding);
+            e.printStackTrace();
+            return null;
+        }
+
 
     }
 
@@ -465,9 +543,9 @@ public class IndexController {
     @PostMapping(path = "/getQuesAnswerById")
     public JsonResult<Object> getQuesAnswerById(@RequestParam Integer quesId) {
         result = new JsonResult<>();
-        answerCount = indexService.getQuesAnswerById(quesId);
+        ensemble = indexService.getQuesAnswerById(quesId);
 
-        result.setData(answerCount);
+        result.setData(ensemble);
         return result;
     }
 

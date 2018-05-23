@@ -1,5 +1,10 @@
 package com.jfw.qms.common;
 
+import com.jfw.qms.model.TempData;
+import com.jfw.qms.test.Test;
+import org.springframework.util.ResourceUtils;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +14,7 @@ public class TreeNode {
     private String attrName;
     private List<TreeNode> treeNodeList;
     private List<String> answers = new ArrayList<>();
+    private List<String> strings = new ArrayList<>();
 
     public TreeNode() {
     }
@@ -53,64 +59,56 @@ public class TreeNode {
         this.msg = msg;
     }
 
-    public String print(int level) {
+    private TempData tempData = new TempData();
 
-        if (null == this)
-            return null;
-        for (int i = 0; i < level; ++i)
+
+    public void print(int level) {
+        for (int i = 0; i < level; ++i) {
             System.out.print("-");
-        System.out.println(this.attrName);
-        info = reduction(this.attrName, level);
-        if (info != null) {
-            return info;
         }
+        System.out.println(this.attrName);
+        getWord(this.attrName);
+        strings.add(this.attrName);
         ++level;
         if (null != this.getTreeNodeList())
-            if (info != null) {
-                return info;
-            } else {
-                for (TreeNode node : this.getTreeNodeList()) {
-                    node.print(level);
-                    if (null != info) {
-                        break;
-                    }
-                }
+            for (TreeNode node : this.getTreeNodeList()) {
+                node.print(level);
             }
-        return info;
     }
 
-    // �����жϷ���
-    private String reduction(String attrname, int level) {
-        switch (level) {
-            case 0:
-                if ("sleep".equals(attrname)) {
-                    if (answers.get(3).equals("C")) {
-                        System.out.println("你没有患有老年病");
-                        msg = "你没有患有老年病";
-                    } else if (answers.get(3).equals("A")) {
-                        System.out.println("你患有老年病");
-                        msg = "你患有老年病";
-                    } else {
-                        break;
-                    }
-                }
-
-                break;
-
-            case 1:
-                if ("exercise".equals(attrname)) {
-                    if (!answers.get(0).equals("B")) {
-                        System.out.println("你患有老年病");
-                        msg = "你患有老年病";
-                    } else {
-                        System.out.println("你没有患有老年病");
-                        msg = "你没有患有老年病";
-                    }
-                }
-
-                break;
+    private void getWord(String attrName) {
+        String root = null;
+        try {
+            root = String.valueOf(ResourceUtils.getURL("application.properties"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        return msg;
+        String pathname = root.split("file:/")[1].split("application.properties")[0] + "/static";
+        File fileDir = new File(pathname);
+        if (!fileDir.exists()) { //如果不存在 则创建
+            fileDir.mkdirs();
+        }
+
+        String path = pathname + "/" + "word.txt";
+
+        FileWriter fw = null;
+        try {
+//如果文件存在，则追加内容；如果文件不存在，则创建文件
+            File f = new File(path);
+            fw = new FileWriter(f, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PrintWriter pw = new PrintWriter(fw);
+        pw.print("," + attrName);
+        pw.flush();
+        try {
+            fw.flush();
+            pw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
