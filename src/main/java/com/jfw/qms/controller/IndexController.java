@@ -386,8 +386,9 @@ public class IndexController {
         if (questionnaireID == 6) {
             msg = isExistenceDisease(map);
             result.setData(msg);
+        } else {
+            result.setData("非分析问卷，无法分析");
         }
-        result.setData("非分析问卷，无法分析");
 
         return result;
     }
