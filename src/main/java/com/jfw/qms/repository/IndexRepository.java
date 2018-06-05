@@ -239,7 +239,11 @@ public class IndexRepository {
 
     public Ensemble getQuesAnswerById(Integer quesId) {
         answerCount = new AnswerCount();
-        answerCount = jdbcTemplate.queryForObject("SELECT * FROM answer_count WHERE ques_id=" + quesId, new BeanPropertyRowMapper<>(AnswerCount.class));
+        List<AnswerCount> answerCounts = jdbcTemplate.query("SELECT * FROM answer_count WHERE ques_id=" + quesId, new BeanPropertyRowMapper<>(AnswerCount.class));
+
+        if (answerCounts.size() != 0) {
+            answerCount = answerCounts.get(0);
+        }
         question = jdbcTemplate.queryForObject("SELECT * FROM question WHERE question_id=" + quesId, new BeanPropertyRowMapper<>(Question.class));
 
         Ensemble ensemble = new Ensemble();

@@ -253,7 +253,7 @@ public class ManagerRepository {
     }
 
     public Integer getCount() {
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM qms.user", Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM qms.user WHERE user_state=0", Integer.class);
         return count;
     }
 }

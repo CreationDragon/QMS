@@ -54,21 +54,50 @@
             var quest = data.data;
             $(".layui-form").empty();
             $.each(data.data, function (i) {
-                var count = i + 1;
-                $(".layui-form").append("<div class=\"layui-form-item\">\n" +
-                    "        <div class=\"layui-input-block\">" + count + "、" + quest[i].title + "</div>\n" +
-                    "\n" +
-                    "        <div class=\"layui-form-item\">\n" +
-                    "            <div class=\"layui-input-block\">\n" +
-                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"A\" title=" + quest[i].answerA + ">\n" +
-                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\"  value=\"B\" title=" + quest[i].answerB + ">\n" +
-                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"C\" title=" + quest[i].answerC + ">\n" +
-                    "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"D\" title=" + quest[i].answerD + ">\n" +
-                    "\n" +
-                    "            </div>\n" +
-                    "        </div>" +
-                    "")
-            })
+                    var count = i + 1;
+
+                    if (quest[i].answerA != null && quest[i].answerB !== "" && quest[i].answerC !== "" && quest[i].answerD !== "") {
+                        $(".layui-form").append("<div class=\"layui-form-item\">\n" +
+                            "        <div class=\"layui-input-block\">" + count + "、" + quest[i].title + "</div>\n" +
+                            "\n" +
+                            "        <div class=\"layui-form-item\">\n" +
+                            "            <div class=\"layui-input-block\">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"A\" title=" + quest[i].answerA + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\"  value=\"B\" title=" + quest[i].answerB + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"C\" title=" + quest[i].answerC + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"D\" title=" + quest[i].answerD + ">\n" +
+                            "\n" +
+                            "            </div>\n" +
+                            "        </div>" +
+                            "")
+                    } else if (quest[i].answerA !== "" && quest[i].answerB !== "" && quest[i].answerC !== "") {
+                        $(".layui-form").append("<div class=\"layui-form-item\">\n" +
+                            "        <div class=\"layui-input-block\">" + count + "、" + quest[i].title + "</div>\n" +
+                            "\n" +
+                            "        <div class=\"layui-form-item\">\n" +
+                            "            <div class=\"layui-input-block\">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"A\" title=" + quest[i].answerA + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\"  value=\"B\" title=" + quest[i].answerB + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"C\" title=" + quest[i].answerC + ">\n" +
+                            "\n" +
+                            "            </div>\n" +
+                            "        </div>" +
+                            "")
+                    } else if (quest[i].answerA !== "" && quest[i].answerB !== "") {
+                        $(".layui-form").append("<div class=\"layui-form-item\">\n" +
+                            "        <div class=\"layui-input-block\">" + count + "、" + quest[i].title + "</div>\n" +
+                            "\n" +
+                            "        <div class=\"layui-form-item\">\n" +
+                            "            <div class=\"layui-input-block\">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\" value=\"A\" title=" + quest[i].answerA + ">\n" +
+                            "                <input type=\"radio\" name=\"" + quest[i].questionId + "\"  value=\"B\" title=" + quest[i].answerB + ">\n" +
+                            "\n" +
+                            "            </div>\n" +
+                            "        </div>" +
+                            "")
+                    }
+                }
+            )
 
             $(".layui-form").append("  <div class=\"layui-form-item\">\n" +
                 "    <div class=\"layui-input-block\">\n" +
