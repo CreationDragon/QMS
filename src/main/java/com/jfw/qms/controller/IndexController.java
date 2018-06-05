@@ -47,6 +47,8 @@ public class IndexController {
     @RequestMapping(path = "/index")
     public JsonResult<Object> getIndex(HttpServletRequest request, Model model) {
 
+        User user = new User();
+
         String userName = (String) request.getSession().getAttribute("userName");
         String userPsw = (String) request.getSession().getAttribute("userPsw");
         Integer userId = (Integer) request.getSession().getAttribute("user_id");
@@ -54,6 +56,8 @@ public class IndexController {
         user.setUserName(userName);
         user.setUserPsw(userPsw);
         user.setUserId(userId);
+
+        user = indexService.getUserInfo(userId);
 
 
         result.setResult("success");
@@ -66,6 +70,7 @@ public class IndexController {
 
     @RequestMapping(path = "/admin/index")
     public JsonResult<Object> getAdminIndex(HttpServletRequest request, Model model) {
+        User user = new User();
 
         String userName = (String) request.getSession().getAttribute("user_name");
         String userPsw = (String) request.getSession().getAttribute("user_psw");
@@ -129,6 +134,7 @@ public class IndexController {
 
     @PostMapping(path = "/getInfo")
     public JsonResult<Object> getUserInfo(@RequestParam Integer userID) {
+        User user = new User();
         user = indexService.getUserInfo(userID);
 
         result.setResult("success");
@@ -138,9 +144,9 @@ public class IndexController {
 
     @PostMapping(path = "/login")
     public JsonResult<Object> Login(HttpServletRequest request, @RequestParam String userName, @RequestParam String userPsw) {
+        User user = new User();
 
         session = request.getSession();
-        user = new User();
         user = indexService.login(userName, userPsw);
 
         if (1 == user.getUserAuthority()) {
