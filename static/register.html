@@ -232,7 +232,10 @@
                             }, 1500)
                         } else {
                             layer.msg(data.data, {icon: 5});
-                            window.location.href = "index.html?userName=" + $("#username").val() + "userPsw=" + $("#password").val();
+                            setTimeout(function () {
+                                window.location.href = "index.html?userName=" + $("#username").val() + "userPsw=" + $("#password").val();
+                            }, 1500)
+
                         }
                     }
                 });
